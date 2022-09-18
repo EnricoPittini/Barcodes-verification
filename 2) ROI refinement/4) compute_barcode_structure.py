@@ -76,7 +76,7 @@ def compute_barcode_structure(roi_image, bb_width, bb_height, algorithm=1, verbo
     min_half_height_up = min(bars_halfHeightUp)
     min_half_height_down = min(bars_halfHeightDown)
     
-    half_height = int(bb_height/2)
+    half_height = math.ceil(bb_height/2)
     
     end_time = time.time()
 
@@ -113,7 +113,7 @@ def compute_barcode_structure(roi_image, bb_width, bb_height, algorithm=1, verbo
 
 ###### ALGORITHM 1
 def _algorithm1(ROI_thresh, bb_width, bb_height):
-    half_height = int(bb_height/2)
+    half_height = math.ceil(bb_height/2)
     half_height_index = half_height-1
 
     # INIZIALIZATION
@@ -193,7 +193,7 @@ def _algorithm1(ROI_thresh, bb_width, bb_height):
 
 ###### ALGORITHM 2
 def _algorithm2(ROI_thresh, bb_width, bb_height):
-    half_height = int(bb_height/2)
+    half_height = math.ceil(bb_height/2)
     half_height_index = half_height-1
 
     # INIZIALIZATION
@@ -309,7 +309,7 @@ def _algorithm2(ROI_thresh, bb_width, bb_height):
 
 ##### ALGORITHM 3
 def _algorithm3(ROI_thresh, bb_width, bb_height):
-    half_height = int(bb_height/2)
+    half_height = math.ceil(bb_height/2)
     half_height_index = half_height-1
 
     # INIZIALIZATION
@@ -470,9 +470,9 @@ def _algorithm3(ROI_thresh, bb_width, bb_height):
 
 ##### ALGORITHM 4
 def _algorithm4(ROI_thresh, bb_width, bb_height):
-    half_height = int(bb_height/2)
+    half_height = math.ceil(bb_height/2)
     half_height_index = half_height-1
-    half_width = int(bb_width/2)
+    half_width = math.ceil(bb_width/2)
 
     # INIZIALIZATION
     i = 0  # Index for iterating over the pixels
