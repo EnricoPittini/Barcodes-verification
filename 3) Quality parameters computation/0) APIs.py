@@ -1153,8 +1153,9 @@ def find_and_fix_wrong_bar(roi_image, bb_height, barcode_structure_dict, level=0
                                         bars_halfHeightUp[b]+bars_halfHeightDown[b]+1, linewidth=1, edgecolor='r', facecolor='none')
                 # Add the patch to the Axes
                 ax.add_patch(rect)
-            plt.show()
             ax.set_title('Fixed barcode structure')
+            plt.show()
+            
 
 
 
