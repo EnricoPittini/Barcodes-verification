@@ -7,12 +7,31 @@ import imutils
 
 ############################ OVERALL FUNCTION 
 def detect_and_refine_roi(image_path, use_same_threshold=False, compute_barcode_structure_algorithm=1, 
-                            outlier_detection_level=0.02):
+                            outlier_detection_level=0.02, visualization_dict=None):
+    if visualization_dict is None:
+        visualization_dict = {}
+    if 'visualize_original_image' not in visualization_dict:
+        visualization_dict['visualize_original_image'] = False
+    if 'visualize_original_image_boundingBox' not in visualization_dict:
+        visualization_dict['visualize_original_image_boundingBox'] = False
+    if 'visualize_rotated_image_boundingBox' not in visualization_dict:
+        visualization_dict['visualize_rotated_image_boundingBox'] = False
+    if 'visualize_barcode_structure' not in visualization_dict:
+        visualization_dict['visualize_barcode_structure'] = False
+    if 'visualize_refined_roi_withQuantities' not in visualization_dict:
+        visualization_dict['visualize_refined_roi_withQuantities'] = False
+    if 'visualize_refined_roi' not in visualization_dict:
+        visualization_dict['visualize_refined_roi'] = False
+
     image = cv2.imread(image_path)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    if visualization_dict['visualize_original_image']:
+        plt.figure()
+        plt.imshow(gray, 'gray')
+        plt.title('Original image')            
 
     # DETECT ROI
-    bb_points_sorted, bb_width, bb_height, threshold = detect_roi(image, visualize_bounding_box=False)
+    bb_points_sorted, bb_width, bb_height, threshold = detect_roi(image, visualize_bounding_box=visualization_dict['visualize_original_image_boundingBox'])
 
     # ROTATE IMAGE AND BOUNDING BOX
     image_rot, bb_points_sorted_rot = rotate_image_boundingBox(image, bb_points_sorted, bb_width, bb_height, 
@@ -20,7 +39,8 @@ def detect_and_refine_roi(image_path, use_same_threshold=False, compute_barcode_
 
     # FIX HORIZONTAL BARS CASE
     image_rot, bb_points_sorted_rot, bb_width, bb_height = fix_horizontalBars_case(image_rot, bb_points_sorted_rot, bb_width, 
-                                                                               bb_height, visualize_fixed_image_bb=False)
+                                                                               bb_height, 
+                                                                               visualize_fixed_image_bb=visualization_dict['visualize_rotated_image_boundingBox'])
 
     # ROI image
     gray_rot = cv2.cvtColor(image_rot, cv2.COLOR_BGR2GRAY)
@@ -42,6 +62,19 @@ def detect_and_refine_roi(image_path, use_same_threshold=False, compute_barcode_
         del bars_width[wrong_bar_index]
         del bars_halfHeightUp[wrong_bar_index]
         del bars_halfHeightDown[wrong_bar_index]
+
+    if visualization_dict['visualize_barcode_structure']:
+        fig, ax = plt.subplots(figsize=(10, 10))
+        ax.imshow(roi_image, 'gray')
+        n_bars = len(bars_start)
+        for b in range(n_bars):
+            # Create a Rectangle patch
+            rect = patches.Rectangle((bars_start[b]-0.5, half_height-bars_halfHeightUp[b]-1-0.5), bars_width[b], 
+                                     bars_halfHeightUp[b]+bars_halfHeightDown[b]+1, linewidth=1, edgecolor='r', facecolor='none')
+            # Add the patch to the Axes
+            ax.add_patch(rect)
+        plt.show()
+        ax.set_title('Exaustive barcode structure')
     
     # Compute barcode quantities
     first_bar_x = min(bars_start)
@@ -53,8 +86,8 @@ def detect_and_refine_roi(image_path, use_same_threshold=False, compute_barcode_
     # REFINE THE BOUNDING BOX AND THE ROI IMAGE
     roi_image_ref, bb_points_sorted_rot_ref = refine_roi(gray_rot, bb_points_sorted_rot, bb_height, bb_width, X, first_bar_x,
                                                          last_bar_x, min_half_height_up, min_half_height_down, 
-                                                         visualize_refined_roi_withQuantities=False, 
-                                                         visualize_refined_roi=False)
+                                                         visualize_refined_roi_withQuantities=visualization_dict['visualize_refined_roi_withQuantities'], 
+                                                         visualize_refined_roi=visualization_dict['visualize_refined_roi'])
 
     
 
@@ -304,7 +337,7 @@ def fix_horizontalBars_case(image_rot, bb_points_sorted_rot, bb_width, bb_height
     barcode_rotated = cv2.convertScaleAbs(gradY).sum()>cv2.convertScaleAbs(gradX).sum()
 
     if not barcode_rotated:
-        return image_rot, bb_points_sorted_rot, bb_width, bb_height
+        image_rot_rot, bb_points_sorted_rot_rot, bb_width, bb_height = image_rot, bb_points_sorted_rot, bb_width, bb_height
 
     else:
         height, width = gray_rot.shape
@@ -341,14 +374,14 @@ def fix_horizontalBars_case(image_rot, bb_points_sorted_rot, bb_width, bb_height
 
         bb_points_sorted_rot_rot = sort_bb_points(bb_points_sorted_rot_rot)
 
-        if visualize_fixed_image_bb:
-            image_rot_rot_bb = image_rot_rot.copy()
-            cv2.drawContours(image_rot_rot_bb, [sort_bb_points_for_visualization(bb_points_sorted_rot_rot)], -1, (0, 255, 0), 3)
-            plt.figure()
-            plt.imshow(image_rot_rot_bb, 'gray')
-            plt.title('Fixed horizontal bars problem')
+    if visualize_fixed_image_bb:
+        image_rot_rot_bb = image_rot_rot.copy()
+        cv2.drawContours(image_rot_rot_bb, [sort_bb_points_for_visualization(bb_points_sorted_rot_rot)], -1, (0, 255, 0), 3)
+        plt.figure()
+        plt.imshow(image_rot_rot_bb, 'gray')
+        plt.title('Fixed horizontal bars problem')
 
-        return image_rot_rot, bb_points_sorted_rot_rot, bb_width, bb_height
+    return image_rot_rot, bb_points_sorted_rot_rot, bb_width, bb_height
         
 
 
