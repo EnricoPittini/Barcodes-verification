@@ -2,12 +2,16 @@ import numpy as np
 import cv2
 from matplotlib import pyplot as plt
 import imutils
+import math
+import matplotlib.patches as patches
+import time
 
 
 
 ############################ OVERALL FUNCTION 
-def detect_and_refine_roi(image_path, use_same_threshold=False, compute_barcode_structure_algorithm=1, 
+def detect_and_refine_roi(image_path, use_same_threshold=False, compute_barcode_structure_algorithm=1, verbose_timing=False,
                             outlier_detection_level=0.02, visualization_dict=None):
+
     if visualization_dict is None:
         visualization_dict = {}
     if 'visualize_original_image' not in visualization_dict:
@@ -28,19 +32,24 @@ def detect_and_refine_roi(image_path, use_same_threshold=False, compute_barcode_
     if visualization_dict['visualize_original_image']:
         plt.figure()
         plt.imshow(gray, 'gray')
-        plt.title('Original image')            
+        plt.title('Original image')      
+
+    start_time = time.time()      
 
     # DETECT ROI
     bb_points_sorted, bb_width, bb_height, threshold = detect_roi(image, visualize_bounding_box=visualization_dict['visualize_original_image_boundingBox'])
+    detecting_roi_end_time = time.time()
 
     # ROTATE IMAGE AND BOUNDING BOX
     image_rot, bb_points_sorted_rot = rotate_image_boundingBox(image, bb_points_sorted, bb_width, bb_height, 
                                                            visualize_rot_image_bb=False)
+    rotating_image_bb_end_time = time.time()
 
     # FIX HORIZONTAL BARS CASE
     image_rot, bb_points_sorted_rot, bb_width, bb_height = fix_horizontalBars_case(image_rot, bb_points_sorted_rot, bb_width, 
                                                                                bb_height, 
                                                                                visualize_fixed_image_bb=visualization_dict['visualize_rotated_image_boundingBox'])
+    fixing_horizontal_bars_case_end_time = time.time()
 
     # ROI image
     gray_rot = cv2.cvtColor(image_rot, cv2.COLOR_BGR2GRAY)
@@ -54,6 +63,7 @@ def detect_and_refine_roi(image_path, use_same_threshold=False, compute_barcode_
                                                                                            verbose=False, 
                                                                                            visualize_refined_bb=False,
                                                                                            visualize_barcode_structure=False)
+    computing_barcode_structure_end_time = time.time()
 
     # FIND WRONG BAR
     wrong_bar_index = find_wrong_bar(bars_start, bars_width, bars_halfHeightUp, bars_halfHeightDown, level=outlier_detection_level)
@@ -62,6 +72,7 @@ def detect_and_refine_roi(image_path, use_same_threshold=False, compute_barcode_
         del bars_width[wrong_bar_index]
         del bars_halfHeightUp[wrong_bar_index]
         del bars_halfHeightDown[wrong_bar_index]
+    fixing_wrong_bar_end_time = time.time()
 
     if visualization_dict['visualize_barcode_structure']:
         fig, ax = plt.subplots(figsize=(10, 10))
@@ -88,6 +99,15 @@ def detect_and_refine_roi(image_path, use_same_threshold=False, compute_barcode_
                                                          last_bar_x, min_half_height_up, min_half_height_down, 
                                                          visualize_refined_roi_withQuantities=visualization_dict['visualize_refined_roi_withQuantities'], 
                                                          visualize_refined_roi=visualization_dict['visualize_refined_roi'])
+    refine_bb_roi_image_end_time = time.time()
+
+    if verbose_timing:
+        print('Computing roi time:', detecting_roi_end_time-start_time)
+        print('Rotating image and bounding box time:', rotating_image_bb_end_time-detecting_roi_end_time)
+        print('Fixing horizontal bars case time:', fixing_horizontal_bars_case_end_time-rotating_image_bb_end_time)
+        print('Computing barcode structure time:', computing_barcode_structure_end_time-fixing_horizontal_bars_case_end_time)
+        print('Fixing wrong bar case time:', fixing_wrong_bar_end_time-computing_barcode_structure_end_time)
+        print('Refining roi image and bounding box time:', refine_bb_roi_image_end_time-fixing_wrong_bar_end_time)
 
     
 
@@ -1066,12 +1086,12 @@ def refine_roi(gray_rot, bb_points_sorted_rot, bb_height, bb_width, X, first_bar
     #new_half_height = math.ceil(new_bb_height/2)
 
     # Visualize
-    if visualize_refine_roi_withQuantities:
+    if visualize_refined_roi_withQuantities:
         roi_image_ref = gray_rot[int(bb_points_sorted_rot_ref[0][1]):int(bb_points_sorted_rot_ref[2][1])+1, 
                                     int(bb_points_sorted_rot_ref[0][0]):int(bb_points_sorted_rot_ref[1][0])+1].copy()
         new_bb_width  = roi_image_ref.shape[1]
         plt.figure()
-        plt.imshow(roi_image_ref_show, 'gray')
+        plt.imshow(roi_image_ref, 'gray')
         #plt.vlines([10*X,-10*X], ymin=0, ymax=new_bb_height,  label='10*X')
         plt.axvline(10*X, c='orange', label='10*X')
         plt.axvline(new_bb_width-10*X-1, c='red', label='-10*X')
