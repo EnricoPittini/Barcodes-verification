@@ -6,7 +6,8 @@ import imutils
 
 
 ############################ OVERALL FUNCTION 
-def detect_and_refine_roi(image_path, use_same_threshold=False):
+def detect_and_refine_roi(image_path, use_same_threshold=False, compute_barcode_structure_algorithm=1, 
+                            outlier_detection_level=0.02):
     image = cv2.imread(image_path)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -28,14 +29,14 @@ def detect_and_refine_roi(image_path, use_same_threshold=False):
 
     # COMPUTE BARCODE STRUCTURE
     bars_start, bars_width, bars_halfHeightUp, bars_halfHeightDown = compute_barcode_structure(roi_image, bb_width, bb_height,
-                                                                                           algorithm=1, 
+                                                                              algorithm=compute_barcode_structure_algorithm, 
                                                                         threshold=threshold if use_same_threshold else None,
                                                                                            verbose=False, 
                                                                                            visualize_refined_bb=False,
                                                                                            visualize_barcode_structure=False)
 
     # FIND WRONG BAR
-    wrong_bar_index = find_wrong_bar(bars_start, bars_width, bars_halfHeightUp, bars_halfHeightDown, level=0.02)
+    wrong_bar_index = find_wrong_bar(bars_start, bars_width, bars_halfHeightUp, bars_halfHeightDown, level=outlier_detection_level)
     if wrong_bar_index is not None:  # Delete wrong bar
         del bars_start[wrong_bar_index]
         del bars_width[wrong_bar_index]
@@ -48,30 +49,14 @@ def detect_and_refine_roi(image_path, use_same_threshold=False):
     X = min(bars_width)
     min_half_height_up = min(bars_halfHeightUp)
     min_half_height_down = min(bars_halfHeightDown)
-
-    half_height = math.ceil(bb_height/2)
     
-    # REFINE 
-    bb_points_sorted_rot_ref = bb_points_sorted_rot.copy()
-    bb_points_sorted_rot_ref[[0,2],0] = bb_points_sorted_rot[[0,2],0] - (10*X-first_bar_x) 
-    bb_points_sorted_rot_ref[[1,3],0] = bb_points_sorted_rot[[1,3],0] + (10*X-(bb_width-last_bar_x-1))
-    roi_image_ref = gray_rot[int(bb_points_sorted_rot_ref[0][1]):int(bb_points_sorted_rot_ref[2][1])+1, int(bb_points_sorted_rot_ref[0][0]):int(bb_points_sorted_rot_ref[1][0])+1]
-    roi_image_ref = roi_image_ref[half_height-min_half_height_up-1:half_height+min_half_height_down-1+1,:]
-    new_bb_height, new_bb_width  = roi_image_ref.shape
-    new_half_height = math.ceil(new_bb_height/2)
-    
-    if visualize:
-        roi_image_ref_show = gray_rot[int(bb_points_sorted_rot_ref[0][1]):int(bb_points_sorted_rot_ref[2][1])+1, int(bb_points_sorted_rot_ref[0][0]):int(bb_points_sorted_rot_ref[1][0])+1].copy()
-        plt.figure()
-        plt.imshow(roi_image_ref_show, 'gray')
-        #plt.vlines([10*X,-10*X], ymin=0, ymax=new_bb_height,  label='10*X')
-        plt.axvline(10*X, c='orange', label='10*X')
-        plt.axvline(new_bb_width-10*X-1, c='red', label='-10*X')
-        plt.axhline(half_height-min_half_height_up-1, c='green', label='Min up height')
-        plt.axhline(half_height+min_half_height_down-1, c='blue', label='Min bottom height')
-        plt.title('Refined ROI, with the computed quantities')
-        plt.legend()
+    # REFINE THE BOUNDING BOX AND THE ROI IMAGE
+    roi_image_ref, bb_points_sorted_rot_ref = refine_roi(gray_rot, bb_points_sorted_rot, bb_height, bb_width, X, first_bar_x,
+                                                         last_bar_x, min_half_height_up, min_half_height_down, 
+                                                         visualize_refined_roi_withQuantities=False, 
+                                                         visualize_refined_roi=False)
 
+    
 
 
 
@@ -1028,3 +1013,53 @@ def find_wrong_bar(bars_start, bars_width, bars_halfHeightUp, bars_halfHeightDow
         return None
     
     return wrong_bars_area_index
+
+
+
+############################ REFINE BOUNDING BOX AND ROI IMAGE
+def refine_roi(gray_rot, bb_points_sorted_rot, bb_height, bb_width, X, first_bar_x, last_bar_x, min_half_height_up, 
+               min_half_height_down, visualize_refined_roi_withQuantities=False, visualize_refined_roi=False):   
+
+    half_height = math.ceil(bb_height/2)
+
+    # Refinement of the bounding box (refinement only along the width, for visualization purposes)
+    bb_points_sorted_rot_ref = bb_points_sorted_rot.copy()
+    bb_points_sorted_rot_ref[[0,2],0] = bb_points_sorted_rot[[0,2],0] - (10*X-first_bar_x) 
+    bb_points_sorted_rot_ref[[1,3],0] = bb_points_sorted_rot[[1,3],0] + (10*X-(bb_width-last_bar_x-1))
+    """roi_image_ref = gray_rot[int(bb_points_sorted_rot_ref[0][1]):int(bb_points_sorted_rot_ref[2][1])+1, 
+                                int(bb_points_sorted_rot_ref[0][0]):int(bb_points_sorted_rot_ref[1][0])+1].copy()"""
+    #roi_image_ref = roi_image_ref[half_height-min_half_height_up-1:half_height+min_half_height_down-1+1,:]
+    #new_bb_height, new_bb_width  = roi_image_ref.shape
+    #new_half_height = math.ceil(new_bb_height/2)
+
+    # Visualize
+    if visualize_refine_roi_withQuantities:
+        roi_image_ref = gray_rot[int(bb_points_sorted_rot_ref[0][1]):int(bb_points_sorted_rot_ref[2][1])+1, 
+                                    int(bb_points_sorted_rot_ref[0][0]):int(bb_points_sorted_rot_ref[1][0])+1].copy()
+        new_bb_width  = roi_image_ref.shape[1]
+        plt.figure()
+        plt.imshow(roi_image_ref_show, 'gray')
+        #plt.vlines([10*X,-10*X], ymin=0, ymax=new_bb_height,  label='10*X')
+        plt.axvline(10*X, c='orange', label='10*X')
+        plt.axvline(new_bb_width-10*X-1, c='red', label='-10*X')
+        plt.axhline(half_height-min_half_height_up-1, c='green', label='Min up height')
+        plt.axhline(half_height+min_half_height_down-1, c='blue', label='Min bottom height')
+        plt.title('Refined ROI, with the computed quantities')
+        plt.legend()
+
+    # Conclude the refinement of the bounding box and the roi image (refinement also along the height)
+    bb_points_sorted_rot_ref[[0,1],1] = bb_points_sorted_rot_ref[[0,1],1] + (half_height-1-min_half_height_up) 
+    bb_points_sorted_rot_ref[[2,3],1] = bb_points_sorted_rot_ref[[2,3],1] - (half_height-1-min_half_height_down)
+    if half_height%2==0:
+        bb_points_sorted_rot_ref[[2,3],1] -= 1 
+    roi_image_ref = gray_rot[int(bb_points_sorted_rot_ref[0][1]):int(bb_points_sorted_rot_ref[2][1])+1, 
+                                int(bb_points_sorted_rot_ref[0][0]):int(bb_points_sorted_rot_ref[1][0])+1].copy()
+    new_bb_height, new_bb_width  = roi_image_ref.shape
+
+
+    if visualize_refined_roi:   
+        plt.figure()
+        plt.imshow(roi_image_ref, 'gray')
+        plt.title('Refined ROI')
+
+    return roi_image_ref, bb_points_sorted_rot_ref
