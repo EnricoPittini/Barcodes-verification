@@ -11,6 +11,26 @@ import time
 ############################ OVERALL FUNCTION 
 def detect_and_refine_roi(image_path, use_same_threshold=False, compute_barcode_structure_algorithm=1, verbose_timing=False,
                             outlier_detection_level=0.02, visualization_dict=None):
+    """Detect and refine the bounding box enclosing the barcode in the given image and refine it. 
+
+    Parameters
+    ----------
+    image_path : str
+        Path for the given image
+    use_same_threshold : bool, optional
+        Whether to use or not the same threshold in the two thresholding operations, by default False.
+        The first thresholding operator is performed for detecting the barcode, while the second for computing the barcode 
+        structure. The Otsu's algorithm is used.
+    compute_barcode_structure_algorithm : int, optional
+        Algorithm for computing the barcode structure, by default 1
+    verbose_timing : bool, optional
+        Whether to print information about the solving time or not, by default False
+    outlier_detection_level : float, optional
+        Level for pruning the outlier bar, by default 0.02
+    visualization_dict : dict, optional
+        Dictionary containing the information regarding the desired plots, by default None
+
+    """
 
     if visualization_dict is None:
         visualization_dict = {}
