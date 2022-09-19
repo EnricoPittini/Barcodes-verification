@@ -98,6 +98,7 @@ def detect_and_refine_roi(image_path, use_same_threshold=False, compute_barcode_
         fig, ax = plt.subplots(figsize=(10, 10))
         ax.imshow(roi_image, 'gray')
         n_bars = len(bars_start)
+        half_height = math.ceil(bb_height/2)
         for b in range(n_bars):
             # Create a Rectangle patch
             rect = patches.Rectangle((bars_start[b]-0.5, half_height-bars_halfHeightUp[b]-1-0.5), bars_width[b], 
