@@ -554,10 +554,10 @@ def compute_barcode_structure(roi_image, bb_width, bb_height, algorithm=1, thres
 
 ###### ALGORITHM 1
 def _algorithm1(ROI_thresh, bb_width, bb_height):
+    # INIZIALIZATION
     half_height = math.ceil(bb_height/2)
     half_height_index = half_height-1
 
-    # INIZIALIZATION
     bars_start = []
     bars_width = []
     bars_halfHeightUp = []
@@ -579,8 +579,7 @@ def _algorithm1(ROI_thresh, bb_width, bb_height):
 
         # Width of this current bar
         X_curr = 1    
-        # Index representing the last pixel in this current bar. Actually, `i_end` is the pixel after the last pixel (i.e. 
-        # first white pixel)
+        # Index representing the last pixel in this current bar
         i_end = i+1
 
         # We go right, till finding a white pixel.
@@ -602,14 +601,8 @@ def _algorithm1(ROI_thresh, bb_width, bb_height):
 
         # Cycle, in which we go upward and downard at the same time, for computing `half_height_up_curr` and 
         # `half_height_down_curr`
-
-        # Flag saying whether the max up height has been reached or not: the three consecutive pixels i_med-1, i_med, I-med+1
-        # must be all white (on the level j_up)
         up_reached = j_up<0 or (ROI_thresh[j_up, i_med]==255 and  ROI_thresh[j_up, i_med-1]==255 and ROI_thresh[j_up, i_med+1]==255)
-        # Flag saying whether the max down height has been reached or not: the three consecutive pixels i_med-1, i_med, I-med+1
-        # must be all white (on the level j_down)
         down_reached = j_down<0 or (ROI_thresh[j_down, i_med]==255 and  ROI_thresh[j_down, i_med-1]==255 and ROI_thresh[j_down, i_med+1]==255)
-        
         while not up_reached or not down_reached:
             if not up_reached:
                 j_up -= 1
@@ -620,7 +613,6 @@ def _algorithm1(ROI_thresh, bb_width, bb_height):
             up_reached = j_up<0 or (ROI_thresh[j_up, i_med]==255 and  ROI_thresh[j_up, i_med-1]==255 and ROI_thresh[j_up, i_med+1]==255)
             down_reached = j_down>=bb_height or (ROI_thresh[j_down, i_med]==255 and  ROI_thresh[j_down, i_med-1]==255 and ROI_thresh[j_down, i_med+1]==255)
 
-        # Update the lists, inserting the values for this current bar
         bars_start.append(i)
         bars_width.append(X_curr)
         bars_halfHeightUp.append(half_height_up_curr)
