@@ -1140,6 +1140,7 @@ def find_and_fix_wrong_bar(roi_image, bb_height, barcode_structure_dict, level=0
 
         # Visualize barcode structure
         if visualize_fixed_barcode_structure:
+            half_height = math.ceil(bb_height/2)
             bars_start, bars_width, bars_halfHeightUp, bars_halfHeightDown = (barcode_structure_dict['bars_start'], 
                                                                         barcode_structure_dict['bars_width'],
                                                                         barcode_structure_dict['bars_halfHeightUp'],
@@ -1165,8 +1166,9 @@ def find_and_fix_wrong_bar(roi_image, bb_height, barcode_structure_dict, level=0
                 roi_image_show[half_height-bars_halfHeightUp[b]-1:half_height+bars_halfHeightDown[b]-1+1,[bars_start[b],bars_start[b]+bars_width[b]-1],:] = np.array([255,0,0])
 
             plt.imshow(roi_image_show)
-            plt.show()   
             plt.title('Fixed barcode structure')
+            plt.show()   
+            
             
 
 
