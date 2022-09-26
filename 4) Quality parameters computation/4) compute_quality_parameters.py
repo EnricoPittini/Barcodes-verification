@@ -1,9 +1,6 @@
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
-import imutils
-import math
-import matplotlib.patches as patches
 import time
 
 import scipy
