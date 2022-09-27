@@ -1,13 +1,12 @@
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
-import time
 import scipy
 
 
 
 def compute_quality_parameters(roi_image_ref, n_scanlines=10, visualize_scanlines_onRoiImage=False, 
-                                visualize_scanlines_qualityParameters=False, verbose_timing=False): 
+                               visualize_scanlines_qualityParameters=False): 
     """Compute the barcode quality parameters on the given ROI image containing a barcode.
 
     The given ROI image is already refined according to the standards, both along the width and along the height.
@@ -39,8 +38,6 @@ def compute_quality_parameters(roi_image_ref, n_scanlines=10, visualize_scanline
     visualize_scanlines_qualityParameters : bool, optional
         Whether to visualize or not the scan reflectance profile of each scanline, with also the computed quality parameters.
         By default False.
-    verbose_timing : bool, optional
-        Whether to access the timing information about the process, by default False
 
     Returns
     -------
@@ -70,8 +67,6 @@ def compute_quality_parameters(roi_image_ref, n_scanlines=10, visualize_scanline
           scanlines and the corresponding grade.  
 
     """    
-    start_time = time.time()
-
     bb_height = roi_image_ref.shape[0]
     
     # Pixel indices of the scanlines along the height of the ROI image
@@ -133,11 +128,6 @@ def compute_quality_parameters(roi_image_ref, n_scanlines=10, visualize_scanline
     # Compute the overall quality parameters dictionary, given the list of quality parameters dictionary on the single 
     # scanlines
     overall_quality_parameters_dict = _compute_overall_quality_parameters_dict(quality_parameters_dict_scanline_list)
-
-    end_time = time.time()
-    if verbose_timing:  # Show timing information
-        print('Computing quality parameters time:', end_time-start_time)
-        print()
 
     return overall_quality_parameters_dict
 
