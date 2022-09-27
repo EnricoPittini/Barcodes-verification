@@ -177,7 +177,7 @@ def plot_barcode_Structure(roi_image, barcode_structure_dict):
 
 
 
-def _compute_barcode_structure(roi_image, threshold=None, algorithm=1, verbose_timing=False):
+def _compute_barcode_structure(roi_image, threshold=None, algorithm=1):
     """Compute the complete barcode structure.
 
     Actually, it computes only the "local" structure, namely quantities related to the individual bars of the barcode. 
@@ -197,8 +197,6 @@ def _compute_barcode_structure(roi_image, threshold=None, algorithm=1, verbose_t
     algorithm : int, optional
         Algorithm to use for computing the barcode structure, by default 1.
         Choices among 1,2,3,4.
-    verbose_timing : bool, optional
-        Whether to print the solving time or not, by default False
 
     Returns
     -------
@@ -223,8 +221,6 @@ def _compute_barcode_structure(roi_image, threshold=None, algorithm=1, verbose_t
         threshold ,ROI_thresh = cv2.threshold(roi_image,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
     else:
         threshold, ROI_thresh = cv2.threshold(roi_image, threshold,255,cv2.THRESH_BINARY)
-    
-    start_time = time.time()
 
     # Fix the algorithm chosen by the user
     if algorithm==1:
@@ -239,12 +235,7 @@ def _compute_barcode_structure(roi_image, threshold=None, algorithm=1, verbose_t
         raise ValueError(f'Invalid algorithm {algorithm}')
 
     # Apply the algorith for computing the barcode local structure
-    bars_start, bars_width, bars_halfHeightUp, bars_halfHeightDown = algorithm_function(ROI_thresh)
-
-    end_time = time.time()
-
-    if verbose_timing:
-        print('Time:', end_time-start_time)        
+    bars_start, bars_width, bars_halfHeightUp, bars_halfHeightDown = algorithm_function(ROI_thresh)  
 
     # Create the dictionary
     barcode_localStructure_dict = {}
