@@ -110,8 +110,7 @@ def refine_roiImage(roi_image, image_rot, bb_points_sorted_rot, compute_barcode_
     # Compute the structure of the barcode. Actually, compute only the "local" structure, namely quantities related to the 
     # individual bars of the barcode.
     barcode_localStructure_dict = _compute_barcode_structure(roi_image, threshold=threshold, 
-                                                            algorithm=compute_barcode_structure_algorithm,
-                                                            verbose_timing=False)
+                                                            algorithm=compute_barcode_structure_algorithm)
 
     # Fix the possible wrong bar case, by pruning the wrong bar from the barcode structure
     if fix_wrongBar_case:
@@ -172,7 +171,7 @@ def plot_barcode_Structure(roi_image, barcode_structure_dict):
                        [bars_start[b],bars_start[b]+bars_width[b]-1],:] = np.array([255,0,0])
 
     plt.imshow(roi_image_show)
-    plt.title('Exaustive barcode structure')
+    plt.title('Exhaustive barcode structure')
     plt.show() 
 
 
@@ -428,7 +427,7 @@ def _refine_roi(roi_image, image_rot, bb_points_sorted_rot, barcode_structure_di
         plt.axvline(10*X, c='orange', label='10*X')
         plt.axvline(bb_width_ref-10*X-1, c='red', label='-10*X')
         plt.axhline(half_height-min_half_height_up-1, c='green', label='Min up height')
-        plt.axhline(half_height+min_half_height_down-1, c='blue', label='Min bottom height')
+        plt.axhline(half_height+min_half_height_down-1, c='blue', label='Min down height')
         plt.title('Refined ROI, with the computed quantities')
         plt.legend()
 

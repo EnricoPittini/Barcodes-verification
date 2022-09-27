@@ -51,6 +51,8 @@ def verify_barcode(image, use_same_threshold=False, compute_barcode_structure_al
         print('\tCompute quality parameters:', end_computeQualityParameters_time-end_refineROI_time)
         print()
 
+    return overall_quality_parameters_dict
+
 
 
 def _populate_visualization_dict(visualization_dict):

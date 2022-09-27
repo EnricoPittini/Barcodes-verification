@@ -8,7 +8,8 @@ from utils import sort_bb_points, sort_bb_points_for_visualization
 
 
 
-def rotate_boundingBox(image, bb_points_sorted, bb_width, bb_height, fix_horizontalBars_case=True, visualize_rotatedImage_boundingBox=False):
+def rotate_boundingBox(image, bb_points_sorted, bb_width, bb_height, fix_horizontalBars_case=True, 
+                       visualize_rotatedImage_boundingBox=False):
     """Rotate the given image and bounding box surrounding the barcode, such that the barcode bars become perfectly vertical.
 
     Basically, a rotation is performed such that the bounding box becomes perfectly aligned with the image axes.
@@ -61,7 +62,7 @@ def rotate_boundingBox(image, bb_points_sorted, bb_width, bb_height, fix_horizon
     # In this way, we are sure that the barcode bars are perfectly vertical.
     if fix_horizontalBars_case:
         image_rot, bb_points_sorted_rot, bb_width, bb_height = _fix_horizontalBars_case(image_rot, bb_points_sorted_rot, 
-                                                                         bb_width, bb_height, visualize_fixed_image_bb=False)
+                                                                                        bb_width, bb_height)
 
     if visualize_rotatedImage_boundingBox:  # Visualize the rotated image with the rotated bounding box
         image_rot_bb = image_rot.copy()
