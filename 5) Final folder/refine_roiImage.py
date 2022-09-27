@@ -131,7 +131,7 @@ def refine_roiImage(roi_image, image_rot, bb_points_sorted_rot, compute_barcode_
         plot_barcode_Structure(roi_image, barcode_structure_dict)
 
     # Refine the ROI image, and the bounding box coordinates
-    roi_image_ref, bb_points_sorted_rot_ref = refine_roi(roi_image, image_rot, bb_points_sorted_rot, barcode_structure_dict, 
+    roi_image_ref, bb_points_sorted_rot_ref = _refine_roi(roi_image, image_rot, bb_points_sorted_rot, barcode_structure_dict, 
                                                          visualize_refinedRoi_withQuantities=visualize_refinedRoi_withQuantities, 
                                                          visualize_refinedRoi=visualize_refinedRoi)
 
@@ -356,7 +356,7 @@ def _fix_wrong_bar(barcode_localStructure_dict, level=0.02):
                       
 
 
-def refine_roi(roi_image, image_rot, bb_points_sorted_rot, barcode_structure_dict, visualize_refinedRoi_withQuantities=False,
+def _refine_roi(roi_image, image_rot, bb_points_sorted_rot, barcode_structure_dict, visualize_refinedRoi_withQuantities=False,
                visualize_refinedRoi=False): 
     """Refine the ROI image containing the barcode, and the bounding box coordinates
 
