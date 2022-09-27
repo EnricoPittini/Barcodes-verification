@@ -3,6 +3,7 @@ import os
 import json
 import pandas as pd
 import numpy as np
+import copy
 
 
 def _compute_boundingBox_centre(bb_points_sorted):
@@ -26,6 +27,15 @@ def _compute_barsSpaces_widths(barcode_structure_dict):
         'bars_spaces_widths': barsSpaces_widths,
         'bars_spaces_flags': spacesBars_flags
     }
+
+def _transform_dict_for_json(d):
+    d_res = copy.deepcopy(d)
+    for key in d:
+        if type(d[key])==np.ndarray:
+            d_res['key'] = list(d[key])
+        elif type(d[key])==dict:
+            d_res['key'] = _transform_dict_for_json(d[key])
+    return d_res
 
 
 
@@ -78,7 +88,7 @@ def build_output_file(detection_dict, rotation_dict, refinement_dict, overall_qu
             'refinement_dict': refinement_dict,
             'overall_quality_parameters_dict': overall_quality_parameters_dict
         } 
-        print(overall_quality_parameters_dict)
+        output_dict = _transform_dict_for_json(output_dict)
         with open(output_path, 'w') as out_file:
             json.dump(output_dict, out_file, indent=4)
 
