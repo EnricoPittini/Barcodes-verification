@@ -123,6 +123,7 @@ def detect_and_refine_boundingBox(image, use_same_threshold=False, compute_barco
         print('Computing barcode structure time:', computing_barcode_structure_end_time-fixing_horizontalBarsCase_end_time)
         print('Fixing wrong bar case time:', fixing_wrong_bar_end_time-computing_barcode_structure_end_time)
         print('Refining roi image and bounding box time:', refine_bb_roi_image_end_time-fixing_wrong_bar_end_time)
+        print()
 
     
     return roi_image_ref, bb_points_sorted_rot_ref, bb_width_ref, bb_height_ref
