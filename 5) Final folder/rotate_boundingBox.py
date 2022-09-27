@@ -8,7 +8,7 @@ from utils import sort_bb_points, sort_bb_points_for_visualization
 
 
 
-def rotate_boundingBox(image, bb_points_sorted, bb_width, bb_height, fix_horizontalBars_case=True, visualize_rot_image_bb=False):
+def rotate_boundingBox(image, bb_points_sorted, bb_width, bb_height, fix_horizontalBars_case=True, visualize_rotatedImage_boundingBox=False):
     """Rotate the given image and bounding box surrounding the barcode, such that the barcode bars become perfectly vertical.
 
     Basically, a rotation is performed such that the bounding box becomes perfectly aligned with the image axes.
@@ -33,7 +33,7 @@ def rotate_boundingBox(image, bb_points_sorted, bb_width, bb_height, fix_horizon
         If True, the possible horizontal bars case is handleled: another rotation is performed, for making the barcode bars 
         perfectly vertical.
         If False, the possible horizontal bars case is not handleled: the barcode bars remain perfectly horizontal.
-    visualize_rot_image_bb : bool, optional
+    visualize_rotatedImage_boundingBox : bool, optional
         Whether to visualize or not the rotated input image with the rotated bounding box, by default False
 
     Returns
@@ -63,7 +63,7 @@ def rotate_boundingBox(image, bb_points_sorted, bb_width, bb_height, fix_horizon
         image_rot, bb_points_sorted_rot, bb_width, bb_height = _fix_horizontalBars_case(image_rot, bb_points_sorted_rot, 
                                                                          bb_width, bb_height, visualize_fixed_image_bb=False)
 
-    if visualize_rot_image_bb:  # Visualize the rotated image with the rotated bounding box
+    if visualize_rotatedImage_boundingBox:  # Visualize the rotated image with the rotated bounding box
         image_rot_bb = image_rot.copy()
         cv2.drawContours(image_rot_bb, [sort_bb_points_for_visualization(bb_points_sorted_rot)], -1, (0, 255, 0), 3)
         plt.figure()
