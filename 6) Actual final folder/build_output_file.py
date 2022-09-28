@@ -1,4 +1,3 @@
-
 import os
 import json
 import pandas as pd
@@ -6,53 +5,38 @@ import numpy as np
 import copy
 
 
-def _compute_boundingBox_centre(bb_points_sorted):
-    return np.mean(bb_points_sorted, axis=0)
-
-def _compute_barsSpaces_widths(barcode_structure_dict):
-    X = barcode_structure_dict['X']
-
-    barsSpaces_widths = []
-    current_space_start = None
-    for bar_start, bar_width in zip(barcode_structure_dict['bars_start'], barcode_structure_dict['bars_width']):
-        barsSpaces_widths.append(bar_width/X)
-        if current_space_start is not None:
-            current_space_width = bar_start-current_space_start
-            barsSpaces_widths.append(current_space_width/X)
-        current_space_start = bar_start + bar_width
-
-    spacesBars_flags = [True if i%2==0 else False for i in range(len(barsSpaces_widths))]
-
-    return {
-        'bars_spaces_widths': barsSpaces_widths,
-        'bars_spaces_flags': spacesBars_flags
-    }
-
-def _transform_dict_for_json(d):
-    d_res = copy.deepcopy(d)
-    for key in d:
-        if type(d[key])==np.ndarray:
-            #print(f'ARRAY {key}')
-            d_res[key] = d[key].tolist()
-        elif type(d[key])==dict:
-            #print(f'DICT {key}')
-            d_res[key] = _transform_dict_for_json(d[key])
-    return d_res
-
-def _compute_bars_local_structure_dict(barcode_structure_dict):
-    bars_local_structure_dict = copy.deepcopy(barcode_structure_dict)
-    del bars_local_structure_dict['X']
-    del bars_local_structure_dict['height']
-    del bars_local_structure_dict['first_bar_x']
-    del bars_local_structure_dict['last_bar_x']
-    del bars_local_structure_dict['min_half_height_up']
-    del bars_local_structure_dict['min_half_height_down']
-    return bars_local_structure_dict
-
-
 
 def build_output_file(detection_dict, rotation_dict, refinement_dict, overall_quality_parameters_dict, image_name, n_scanlines=10,
         output_file_name=None, output_file_type='excel 1', output_folder_path='./out'):
+    """Build the output file containing the information computed from the process of the verification of the barcode, using the
+    `verify_barcode` function.
+
+    Parameters
+    ----------
+    detection_dict : _type_
+        _description_
+    rotation_dict : _type_
+        _description_
+    refinement_dict : _type_
+        _description_
+    overall_quality_parameters_dict : _type_
+        _description_
+    image_name : _type_
+        _description_
+    n_scanlines : int, optional
+        _description_, by default 10
+    output_file_name : _type_, optional
+        _description_, by default None
+    output_file_type : str, optional
+        _description_, by default 'excel 1'
+    output_folder_path : str, optional
+        _description_, by default './out'
+
+    Raises
+    ------
+    ValueError
+        _description_
+    """
 
     #output_folder_path = os.path.normpath(output_folder_path)
 
@@ -74,12 +58,6 @@ def build_output_file(detection_dict, rotation_dict, refinement_dict, overall_qu
             'OVERALL_SYMBOL_GRADE' : [overall_quality_parameters_dict['OVERALL_SYMBOL_GRADE']]
         })
         
-        """barcode_structure_df = pd.DataFrame({
-            'bars_start': refinement_dict['barcode_structure_dict']['bars_start'],
-            'bars_width': refinement_dict['barcode_structure_dict']['bars_width'],
-            'bars_halfHeightUp': refinement_dict['barcode_structure_dict']['bars_halfHeightUp'],
-            'bars_halfHeightDown': refinement_dict['barcode_structure_dict']['bars_halfHeightDown']
-        })"""
         barcode_structure_df = pd.DataFrame(_compute_barsSpaces_widths(refinement_dict['barcode_structure_dict']))
         barcode_structure_df.index.name = 'bars_spaces'
 
@@ -155,3 +133,49 @@ def build_output_file(detection_dict, rotation_dict, refinement_dict, overall_qu
 
     else:
         raise ValueError(f'Unsopported output file type {output_file_type}')
+
+
+
+
+def _compute_boundingBox_centre(bb_points_sorted):
+    return np.mean(bb_points_sorted, axis=0)
+
+def _compute_barsSpaces_widths(barcode_structure_dict):
+    X = barcode_structure_dict['X']
+
+    barsSpaces_widths = []
+    current_space_start = None
+    for bar_start, bar_width in zip(barcode_structure_dict['bars_start'], barcode_structure_dict['bars_width']):
+        barsSpaces_widths.append(bar_width/X)
+        if current_space_start is not None:
+            current_space_width = bar_start-current_space_start
+            barsSpaces_widths.append(current_space_width/X)
+        current_space_start = bar_start + bar_width
+
+    spacesBars_flags = [True if i%2==0 else False for i in range(len(barsSpaces_widths))]
+
+    return {
+        'bars_spaces_widths': barsSpaces_widths,
+        'bars_spaces_flags': spacesBars_flags
+    }
+
+def _transform_dict_for_json(d):
+    d_res = copy.deepcopy(d)
+    for key in d:
+        if type(d[key])==np.ndarray:
+            #print(f'ARRAY {key}')
+            d_res[key] = d[key].tolist()
+        elif type(d[key])==dict:
+            #print(f'DICT {key}')
+            d_res[key] = _transform_dict_for_json(d[key])
+    return d_res
+
+def _compute_bars_local_structure_dict(barcode_structure_dict):
+    bars_local_structure_dict = copy.deepcopy(barcode_structure_dict)
+    del bars_local_structure_dict['X']
+    del bars_local_structure_dict['height']
+    del bars_local_structure_dict['first_bar_x']
+    del bars_local_structure_dict['last_bar_x']
+    del bars_local_structure_dict['min_half_height_up']
+    del bars_local_structure_dict['min_half_height_down']
+    return bars_local_structure_dict

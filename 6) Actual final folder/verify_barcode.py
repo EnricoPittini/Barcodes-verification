@@ -6,34 +6,167 @@ from detect_boundingBox import detect_boundingBox
 from rotate_boundingBox import rotate_boundingBox
 from refine_ROIimage import refine_ROIimage
 from compute_quality_parameters import compute_quality_parameters
-from build_output_file import build_output_file
 
-""" verbose_timing : bool, optional
-        Whether to print the timing information about the process or not, by default False"""
+from build_output_file import build_output_file
 
 
 
 def verify_barcode(image_path, use_same_threshold=False, compute_barcode_structure_algorithm=1, n_scanlines=10, 
                    outlier_detection_level=0.02, visualization_dict=None, verbose_timing=False, create_output_file=False,
                    output_file_name=None, output_file_type='excel 1', output_folder_path='./out'):
+    """Verify the printing quality of the barcode contained in the given input image.
+
+    This process consists in four subsequent operations.
+    1) DETECT THE BOUNDING BOX
+       The bounding box surrounding the barcode in the input image is detected.
+       See `detect_boundingBox` function.
+    2) ROTATE THE BOUNDING BOX
+       The image and the bounding box are rotated such that the barcode bars are now perfectly vertical.
+       From this operation, the ROI image is computed, which is the sub-image containing the barcode, with the bars perfectly
+       vertical. Basically, the ROI image is the rotated image cropped around the rotated barcode.
+       Remark: the ROI image is gray-scale.
+       See `rotate_boundingBox` function.
+    3) REFINE THE ROI IMAGE
+       The ROI image is refined, according to a certain standard.
+       - Along the width, the refined ROI image is such that there are exactly 10*X pixels before the first barcode bar and
+         after the last barcode bar, where X is the minimum width of a bar.
+       - Along the height, the ROI image is refined in order to perfectly fit the bar with smallest height. Basically, 
+         the height of the refined ROI image is equal to the minimum height of a barcode bar. 
+       In order to perform this refinement, the precise and complete structure of the barcode is computed: every dimension 
+       about each bar is computed.
+       See `refine_ROIimage` function.
+    4) COMPUTE THE QUALITY PARAMETERS
+       Finally, the quality parameters of the barcode are computed, on the refined ROI image.
+       For computing the quality parameters, `n_scanlines` equally spaced horizontal lines are considered in the given ROI image.
+       The quality parameters are computed one each scanline, and they are the following.
+       - Minimum reflectance, i.e. R_min.
+       - Symbol Contrast, i.e. SC. For computing it, also the maximum reflectance, i.e. R_max, is taken into account.
+       - Minimum Edge Contrast, i.e. EC_min.
+       - MODULATION.
+       - DEFECT. For computing it, also the maximum Element Reflectance Non-uniformity, i.e. ERN_max, is taken into account.
+       For each of these parameters, a numerical value is computed, and a symbolic grade is assigned, between 'A' and 'F'. 
+       In addition, a symbolic grade and a numerical value are assigned to the whole scanline.
+       Finally, an overall symbolic grade and an overall numerical value are assigned to the whole barcode.
+       See `compute_quality_parameters` function.
+
+    For more information, see the report of this project.
+
+    For each of these four steps, a dictionary containing the information regarding that step is returned in output.
+
+    Optionally, an output file can be created, containing the information computed from this process.
+
+    Parameters
+    ----------
+    image_path : str
+        Path to the input image
+    use_same_threshold : bool, optional
+        Whether to use or not the same threshold in the two thresholding operations, by default False.
+        The first thresholding operator is performed for detecting the barcode, while the second for computing the barcode 
+        structure. 
+        If False, the Otsu's algorithm is used for computing the threshold in both the thresholding operations.
+        If True, the Otsu's algorithm is used only in the first thresholding operation, and then the same threshold is used
+        for the second operation.
+    compute_barcode_structure_algorithm : int, optional
+         Algorithm for computing the barcode structure, by default 1
+    n_scanlines : int, optional
+        Number of scanlines used for computing the quality parameters, by default 10
+    outlier_detection_level : float, optional
+        Level for detecting a possible outlier bar (i.e. wrong bar) in the computed barcode structure, by default 0.02.
+        The bigger, the easier is that a bar is considered as an outlier, i.e. wrong.
+    visualization_dict : _type_, optional
+        Dictionary containing the information regarding the desired plots, by default None.
+        If 'all', all the plots are made.
+        The possible keys are the following, containing boolean values.
+        - visualize_original_image_boundingBox : whether to visualize or not the original input image with the detected 
+                                                 bounding box surrounding the barcode. (Operation 1)
+        - visualize_rotated_image_boundingBox : whether to visualize or not the rotated input image with the rotated bounding
+                                                 box. (Operation 2)
+        - visualize_barcode_structure : whether to visualize the barcode structure or not.  (Operation 3)
+        - visualize_refinedRoi_withQuantities : whether to visualize or not the refined ROI image with the computed quantities.
+                                                (Operation 3)
+        - visualize_refinedRoi : whether to visualize or not the refined ROI image. (Operation 3)
+        - visualize_scanlines_onRoiImage : whether to visualize or not the ROI image with the scanlines. (Operation 4)
+        - visualize_scanlines_qualityParameters : whether to visualize or not the scan reflectance profile of each scanline,
+                                                  with also the computed quality parameters. (Operation 4)
+    verbose_timing : bool, optional
+        Whether to print or not the information regarding the time of each one of the four operations, by default False
+    create_output_file : bool, optional
+        Whether to create an output file containing the computed information or not, by default False
+    output_file_name : _type_, optional
+        Name of the optional output file, by default None.
+        If None, the output file name is 'output <NAME OF THE IMAGE>'
+    output_file_type : str, optional
+        Type of the optional output file, by default 'excel 1'.
+        Three possibilites:
+        - 'excel 1': excel file containing the information recquested in the description of the project
+        - 'excel 2': richier excel file, containing almost all the computed quantities.
+        - 'json': exhaustive json file containing all the computed information. WARNING: the creation of the file can take
+                  a lot of time.
+    output_folder_path : str, optional
+        Path of the folder for the optional output file, by default './out'
+
+    Returns
+    -------
+    detection_dict : dict
+        Dictionary containing the information and results obtained from the first operation, i.e. from the detection of the 
+        barcode. The keys are the following.
+        - bb_points_sorted : np.array
+            Array 4x2, containing the coordinates of the four bounding box verteces. 
+            The points are ordered in the following way: up-left, up-right, bottom-left, bottom-right.
+        - bb_width : int
+            Width of the bounding box.
+        - bb_height : int
+            Height of the bounding box.
+        - threshold : float
+            Threshold used in the thresholding operation for detecting the bounding box.
+            It has been computed using the Otsu's algorithm.
+    rotation_dict : dict
+        Dictionary containing the information and results obtained from the second operation, i.e. from the rotation of the 
+        barcode. The keys are the following.
+        - image_rot : np.array
+            Rotated input image.
+        - bb_points_sorted_rot : int
+            The rotated bounding box. More precisely, array 4x2 containing the coordinates of the 4 verteces of the rotated 
+            bounding box. These four verteces are ordered according to our standard ordering, namely upper-left -> upper-right -> 
+            lower-left -> lower-right.
+        - roi_image : int
+            Rotated input image cropped around the rotated bounding box. Basically, sub-image containing only the barcode (i.e. 
+            the ROI), whose bars are perfectly vertical.
+            It is important to point out that this ROI image is in gray-scale, not colored.
+        - angle : float
+            Orientation of the original bounding box with in the original image.
+            Basically, angle of the original bounding box with respect to the original horixontal axis.
+    refinement_dict : dict
+        Dictionary containing the information and results obtained from the third operation, i.e. from the refinement of the 
+        ROI image. The keys are the following.
+        'roi_image_ref': np.array
+        'bb_points_sorted_rot_ref': np.array
+        'barcode_structure_dict': dict
+    overall_quality_parameters_dict : dict
+
+    """
 
     image = cv2.imread(image_path) 
     image_name = '.'.join(os.path.basename(image_path).split('.')[:-1])
-    #print(image_name)   
 
+    # Populate the visualization dict, handling also the particular cases
     visualization_dict = _populate_visualization_dict(visualization_dict) 
 
     start_time = time.time()
 
+    # 1) DETECT THE BOUNDING BOX
     bb_points_sorted, bb_width, bb_height, threshold = detect_boundingBox(image, 
                                         visualize_bounding_box=visualization_dict['visualize_originalImage_boundingBox'])
     end_detectBB_time = time.time()
 
+    # 2) ROTATE THE BOUNDING BOX
     image_rot, bb_points_sorted_rot, roi_image, angle = rotate_boundingBox(image, bb_points_sorted, bb_width, bb_height, 
                                     fix_horizontalBars_case=True, 
                                     visualize_rotatedImage_boundingBox=visualization_dict['visualize_rotatedImage_boundingBox'])
     end_rotateBB_time = time.time()
 
+    # 3) REFINE THE ROI IMAGE
+    # And compute the barcode structure
     roi_image_ref, bb_points_sorted_rot_ref, barcode_structure_dict = refine_ROIimage(roi_image, image_rot, 
                                     bb_points_sorted_rot, 
                                     compute_barcode_structure_algorithm=compute_barcode_structure_algorithm, 
@@ -45,6 +178,7 @@ def verify_barcode(image_path, use_same_threshold=False, compute_barcode_structu
                                     visualize_refinedRoi=visualization_dict['visualize_refinedRoi'])
     end_refineROI_time = time.time()
 
+    # 4) COMPUTE THE QUALITY PARAMETERS
     overall_quality_parameters_dict = compute_quality_parameters(roi_image_ref, n_scanlines=n_scanlines, 
                                     visualize_scanlines_onRoiImage=visualization_dict['visualize_scanlines_onRoiImage'], 
                                     visualize_scanlines_qualityParameters=visualization_dict['visualize_scanlines_qualityParameters'])
@@ -57,6 +191,8 @@ def verify_barcode(image_path, use_same_threshold=False, compute_barcode_structu
         print('\tRefine ROI image:', end_refineROI_time-end_rotateBB_time)
         print('\tCompute quality parameters:', end_computeQualityParameters_time-end_refineROI_time)
         print()
+
+    # Create and return tthe dictionaries containing the information regarding each of the four operations
 
     detection_dict = {
         'bb_points_sorted': bb_points_sorted,
@@ -78,7 +214,7 @@ def verify_barcode(image_path, use_same_threshold=False, compute_barcode_structu
         'barcode_structure_dict': barcode_structure_dict
     }
 
-    if create_output_file:
+    if create_output_file:  # Create output file
         build_output_file(detection_dict, rotation_dict, refinement_dict, overall_quality_parameters_dict, image_name, n_scanlines=n_scanlines,
                            output_file_name=output_file_name, output_file_type=output_file_type, output_folder_path=output_folder_path)
 
@@ -87,6 +223,7 @@ def verify_barcode(image_path, use_same_threshold=False, compute_barcode_structu
 
 
 def _populate_visualization_dict(visualization_dict):
+    """Populate the visualization dict, handling also the particular cases"""
     if visualization_dict=='all':
         visualization_dict = {}
         visualization_dict['visualize_originalImage_boundingBox'] = True

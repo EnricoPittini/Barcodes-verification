@@ -13,10 +13,11 @@ def refine_ROIimage(roi_image, image_rot, bb_points_sorted_rot, compute_barcode_
     The ROI image has been obtained by cropping the input image around the bounding box containing the barcode, after they 
     have been both rotated in order to have the barcode bars perfectly vertical.
 
-    This refinement of the ROI image is done both along the width and along the height.
+    The refinement of the ROI image is done according to a certain standard.
+    This refinement happens both along the width and along the height.
     - Along the width, the refined ROI image is such that there are exactly 10*X pixels before the first barcode bar and
       after the last barcode bar, where X is the minimum width of a bar.
-    - Along the height, the ROI image is refined in order to perfectly fit the barcode bar with smallest height. Basically, 
+    - Along the height, the ROI image is refined in order to perfectly fit the bar with smallest height. Basically, 
       the height of the refined ROI image is equal to the minimum height of a barcode bar.
 
     In order to perform this refinement, the precise and complete structure of the barcode is computed. Namely, the 
@@ -70,7 +71,7 @@ def refine_ROIimage(roi_image, image_rot, bb_points_sorted_rot, compute_barcode_
         If True, the possible wrong bar case is handleled: the wrong bar is pruned from the barcode structure.
         If False, the possible wrong bar case is not handleled: the barcode structure is not touched.
     outlier_detection_level : float, optional
-        Level for detecting the outlier bar, by default 0.02.
+        Level for detecting a possible outlier bar, by default 0.02.
         The bigger, the easier is that a bar is considered as an outlier, i.e. wrong.
     visualize_barcode_structure : bool, optional
         Whether to visualize the barcode structure or not, by default False

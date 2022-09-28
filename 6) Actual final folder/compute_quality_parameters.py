@@ -32,7 +32,7 @@ def compute_quality_parameters(roi_image_ref, n_scanlines=10, visualize_scanline
         barcode bars perfectly vertical and after that the bounding box has been refined according to the standards.
         It is important to point out that this ROI image is gray-scale, not colored.
     n_scanlines : int, optional
-        Number of scanlines, by default 10
+        Number of scanlines used for computing the quality parameters, by default 10
     visualize_scanlines_onRoiImage : bool, optional
         Whether to visualize or not the ROI image with the scanlines, by default False
     visualize_scanlines_qualityParameters : bool, optional
