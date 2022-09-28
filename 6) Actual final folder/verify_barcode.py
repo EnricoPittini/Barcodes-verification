@@ -15,11 +15,11 @@ from build_output_file import build_output_file
 
 def verify_barcode(image_path, use_same_threshold=False, compute_barcode_structure_algorithm=1, n_scanlines=10, 
                    outlier_detection_level=0.02, visualization_dict=None, verbose_timing=False, create_output_file=False,
-                   output_file_name=None, output_file_type='excel', output_folder_path='./out'):
+                   output_file_name=None, output_file_type='excel 1', output_folder_path='./out'):
 
     image = cv2.imread(image_path) 
     image_name = '.'.join(os.path.basename(image_path).split('.')[:-1])
-    print(image_name)   
+    #print(image_name)   
 
     visualization_dict = _populate_visualization_dict(visualization_dict) 
 

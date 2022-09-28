@@ -31,6 +31,7 @@ def refine_ROIimage(roi_image, image_rot, bb_points_sorted_rot, compute_barcode_
     - Finally, the following quantities are computed for each barcode bar.
         * Horixontal coordinate of the first pixel.
         * Width.
+        * Height.
         * Half height from the middle of the ROI image upward.
         * Half height from the middle of the ROI image downward.
     So, both global quantities (i.e. related to the whole barcode) and local quantities (i.e. related to the single bars) are 
@@ -100,6 +101,7 @@ def refine_ROIimage(roi_image, image_rot, bb_points_sorted_rot, compute_barcode_
         - last_bar_x : horixontal coordinate of the last pixel of the last bar (i.e. right-most bar).
         - bars_start : list contaning, for each bar, the horixontal coordinate of the first pixel of that bar.
         - bars_width : list contaning, for each bar, the width of that bar.
+        - bars_height : list contaning, for each bar, the height of that bar.
         - bars_halfHeightUp :  list contaning, for each bar, the half height from the middle of the ROI image upward of that 
                                bar.
         - bars_halfHeightDown :  list contaning, for each bar, the half height from the middle of the ROI image downward of that 
@@ -203,6 +205,7 @@ def _compute_barcode_structure(roi_image, threshold=None, algorithm=1):
         Dictionary containing the barcode local structure. The keys are the following.
         - bars_start : list contaning, for each bar, the horixontal coordinate of the first pixel of that bar.
         - bars_width : list contaning, for each bar, the width of that bar.
+        - bars_height : list contaning, for each bar, the height of that bar.
         - bars_halfHeightUp :  list contaning, for each bar, the half height from the middle of the ROI image upward of that 
                                bar.
         - bars_halfHeightDown :  list contaning, for each bar, the half height from the middle of the ROI image downward of that 
@@ -240,8 +243,9 @@ def _compute_barcode_structure(roi_image, threshold=None, algorithm=1):
     barcode_localStructure_dict = {}
     barcode_localStructure_dict['bars_start'] =  bars_start 
     barcode_localStructure_dict['bars_width'] =  bars_width   
+    barcode_localStructure_dict['bars_height'] = [bars_halfHeightUp[i]+bars_halfHeightDown[i]+1 for i in range(len(bars_halfHeightUp))] 
     barcode_localStructure_dict['bars_halfHeightUp'] =  bars_halfHeightUp   
-    barcode_localStructure_dict['bars_halfHeightDown'] =  bars_halfHeightDown     
+    barcode_localStructure_dict['bars_halfHeightDown'] =  bars_halfHeightDown  
     
     return barcode_localStructure_dict
 
@@ -301,6 +305,7 @@ def _fix_wrong_bar(barcode_localStructure_dict, level=0.02):
         Dictionary containing the barcode local structure. The keys are the following.
         - bars_start : list contaning, for each bar, the horixontal coordinate of the first pixel of that bar.
         - bars_width : list contaning, for each bar, the width of that bar.
+        - bars_height : list contaning, for each bar, the height of that bar.
         - bars_halfHeightUp :  list contaning, for each bar, the half height from the middle of the ROI image upward of that 
                                bar.
         - bars_halfHeightDown :  list contaning, for each bar, the half height from the middle of the ROI image downward of that 
@@ -463,9 +468,9 @@ OUTPUTS
 - bars_start : list contaning, for each bar, the horixontal coordinate of the first pixel of that bar.
 - bars_width : list contaning, for each bar, the width of that bar.
 - bars_halfHeightUp :  list contaning, for each bar, the half height from the middle of the ROI image upward of that 
-                bar.
+                       bar.
 - bars_halfHeightDown :  list contaning, for each bar, the half height from the middle of the ROI image downward of that 
-                bar.
+                         bar.
 
 """
 
