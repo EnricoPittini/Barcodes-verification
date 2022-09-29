@@ -93,7 +93,10 @@ def refine_ROIimage(roi_image, image_rot, bb_points_sorted_rot, compute_barcode_
         Array 4x2, containing the coordinates of the four bounding box points. 
         The points are ordered in the following way: up-left, up-right, bottom-left, bottom-right.
     barcode_structure_dict : dict
-        Dictionary containing the information about the barcode structure. The keys are the following.
+        Dictionary containing the information about the barcode structure. It is very important to point out that the 
+        following quantities are computed with respect to the ROi image (not refined): in other words, the reference system 
+        is `roi_image`.
+        The keys are the following.
         - X : minimum width of a bar.
         - min_half_height_up : minimum half height of a bar from the middle of the ROI image upward.
         - min_half_height_down : minimum half height of a bar from the middle of the ROI image downward.

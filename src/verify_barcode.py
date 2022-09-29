@@ -33,7 +33,7 @@ def verify_barcode(image_path, use_same_threshold=False, compute_barcode_structu
        - Along the height, the ROI image is refined in order to perfectly fit the bar with smallest height. Basically, 
          the height of the refined ROI image is equal to the minimum height of a barcode bar. 
        In order to perform this refinement, the precise and complete structure of the barcode is computed: every dimension 
-       about each bar is computed.
+       about each bar is computed. 
        See the `refine_ROIimage` function.
     4) COMPUTE THE QUALITY PARAMETERS
        Finally, the quality parameters of the barcode are computed, on the refined ROI image.
@@ -99,9 +99,10 @@ def verify_barcode(image_path, use_same_threshold=False, compute_barcode_structu
         Type of the optional output file, by default 'excel 1'.
         Three possibilites:
         - 'excel 1': excel file containing the information recquested in the description of the project
-        - 'excel 2': richier excel file, containing almost all the computed quantities.
-        - 'json': exhaustive json file containing all the computed information. WARNING: the creation of the file can take
-                  a lot of time.
+        - 'excel 2': richier excel file, containing all the computed quantities, except for the images(i.e. rotated input 
+                  image, ROI image and refined ROI image.)
+        - 'json': exhaustive json file containing all the computed information, except for the images (i.e. rotated input 
+                  image, ROI image and refined ROI image.)
     output_folder_path : str, optional
         Path of the folder for the optional output file, by default './out'
 
@@ -148,7 +149,10 @@ def verify_barcode(image_path, use_same_threshold=False, compute_barcode_structu
             bounding box points. 
             These four verteces are ordered according to our standard ordering.
         'barcode_structure_dict': dict
-            Dictionary containing the information about the barcode structure. The keys are the following.
+            Dictionary containing the information about the barcode structure. It is very important to point out that the 
+            following quantities are computed with respect to the ROi image (not refined): in other words, the reference system 
+            is `roi_image`(contained in `rotation_dict`).
+            The keys are the following.
             - X : minimum width of a bar.
             - min_half_height_up : minimum half height of a bar from the middle of the ROI image upward.
             - min_half_height_down : minimum half height of a bar from the middle of the ROI image downward.

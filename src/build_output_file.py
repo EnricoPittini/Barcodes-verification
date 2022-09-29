@@ -39,9 +39,10 @@ def build_output_file(detection_dict, rotation_dict, refinement_dict, overall_qu
         Type of the optional output file, by default 'excel 1'.
         Three possibilites:
         - 'excel 1': excel file containing the information recquested in the description of the project
-        - 'excel 2': richier excel file, containing almost all the computed quantities.
-        - 'json': exhaustive json file containing all the computed information. WARNING: the creation of the file can take
-                  a lot of time.
+        - 'excel 2': richier excel file, containing all the computed quantities, except for the images(i.e. rotated input 
+                  image, ROI image and refined ROI image.)
+        - 'json': exhaustive json file containing all the computed information, except for the images (i.e. rotated input 
+                  image, ROI image and refined ROI image.)
     output_folder_path : str, optional
         Path of the folder for the optional output file, by default './out'
 
@@ -134,6 +135,9 @@ def build_output_file(detection_dict, rotation_dict, refinement_dict, overall_qu
             'refinement_dict': refinement_dict,
             'overall_quality_parameters_dict': overall_quality_parameters_dict
         } 
+        del output_dict['rotation_dict']['image_rot']
+        del output_dict['rotation_dict']['roi_image']
+        del output_dict['refinement_dict']['roi_image_ref']
         output_dict = _transform_dict_for_json(output_dict)
         with open(output_path, 'w') as out_file:
             json.dump(output_dict, out_file, indent=6)
