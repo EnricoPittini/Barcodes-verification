@@ -14,17 +14,17 @@ Since the the barcode in the input image can be rotated and can have different s
 - Along the width, there are exactly $10*X$ pixels before the first barcode bar and after the last barcode bar, where $X$ is the minimum width of a bar.
 - Along the height, it perfectly fits the bar with smallest height. Basically, the height of the refined ROI image is equal to the minimum height of a barcode bar. 
 
-<p align="left">
-  <img width="150vw" src="./images/original_image_22.png">
-  <img width="150vw" src="./images/refined_roi_image_quantities_22.png">
-  <img width="150vw" src="./images/refined_roi_image_22.png">
+<p align="center">
+  <img width="300vw" src="./images/original_image_22.png">
+  <img width="300vw" src="./images/refined_roi_image_quantities_22.png">
+  <img width="300vw" src="./images/refined_roi_image_22.png">
 </p>
 
 *These images refer to the image 'UPC#01'.*
 
 Then, the print quality parameters are computed. For computing the quality parameters, $10$ equally spaced horizontal lines are considered in the refined ROI image.
 <p align="center">
-  <img width="150vw" src="./images/refined_roi_image_scanlines_22.png">
+  <img width="300vw" src="./images/refined_roi_image_scanlines_22.png">
 </p>
 
 The quality parameters are computed one each scanline, by considering the *scan reflectance profile*, and they are the following.
@@ -48,10 +48,10 @@ Set of images containing barcodes, on which the application can be tested. Also 
 ### General overview
 Different kinds of barcodes are present. In addition, there are images in which the barcode is particularly rotated or scaled. There are also images in which the barcode has the bars which are horizontally aligned instead of vertically.
 <p align="center">
-  <img width="150vw" src="./images/original_image_4.png">
-  <img width="150vw" src="./images/original_image_16.png">
-  <img width="150vw" src="./images/original_image_26.png">
-  <img width="150vw" src="./images/original_image_10.png">
+  <img width="300vw" src="./images/original_image_4.png">
+  <img width="300vw" src="./images/original_image_16.png">
+  <img width="300vw" src="./images/original_image_26.png">
+  <img width="300vw" src="./images/original_image_10.png">
 </p>
 
 ### Bad contrast images
@@ -61,11 +61,11 @@ There are images in which the contrast, i.e. $SC$, is particularly bad on purpos
 </p>
 More specifically, five images are particularly interesting for $SC$, since its grade ranges from 'A' to 'F'. 
 <p align="center">
-  <img width="150vw" src="./images/original_image_23.png">
-  <img width="150vw" src="./images/original_image_24.png">
-  <img width="150vw" src="./images/original_image_25.png">
-  <img width="150vw" src="./images/original_image_26_SC.png">
-  <img width="150vw" src="./images/original_image_27.png">
+  <img width="300vw" src="./images/original_image_23.png">
+  <img width="300vw" src="./images/original_image_24.png">
+  <img width="300vw" src="./images/original_image_25.png">
+  <img width="300vw" src="./images/original_image_26_SC.png">
+  <img width="300vw" src="./images/original_image_27.png">
 </p>
 
 ### Bad modulation images
@@ -73,36 +73,36 @@ There are images in which the modulation, i.e. $M$, is particularly bad on purpo
 
 More specifically, five images are particularly interesting for $M$, since its grade ranges from 'A' to 'F'. 
 <p align="center">
-  <img width="150vw" src="./images/original_image_28.png">
-  <img width="150vw" src="./images/original_image_29.png">
-  <img width="150vw" src="./images/original_image_30.png">
-  <img width="150vw" src="./images/original_image_31.png">
-  <img width="150vw" src="./images/original_image_32.png">
+  <img width="300vw" src="./images/original_image_28.png">
+  <img width="300vw" src="./images/original_image_29.png">
+  <img width="300vw" src="./images/original_image_30.png">
+  <img width="300vw" src="./images/original_image_31.png">
+  <img width="300vw" src="./images/original_image_32.png">
 </p>
 
 ### Bad defect images
 Finally, there are images in which the defect, i.e. $D$, is particularly bad on purpose. For obtaining a bad $D$, a "fake vertical bar" has been added to the barcode, either inside a space or a bar, for increasing the range of different intensities inside that barcode element. This "fake vertical bar" is called *defect*, and it can be either inside a space, i.e. *defect spot*, or inside a bar, i.e. *defect void*.
 <p align="center">
-  <img width="150vw" src="./images/original_image_18.png">
-  <img width="150vw" src="./images/original_image_4_D.png">
+  <img width="300vw" src="./images/original_image_18.png">
+  <img width="300vw" src="./images/original_image_4_D.png">
 </p>
 
 More specifically, five images are particularly interesting for $D$, since its grade ranges from 'A' to 'F', due to a defect spot.
 <p align="center">
-  <img width="150vw" src="./images/original_image_33.png">
-  <img width="150vw" src="./images/original_image_34.png">
-  <img width="150vw" src="./images/original_image_35.png">
-  <img width="150vw" src="./images/original_image_36.png">
-  <img width="150vw" src="./images/original_image_37.png">
+  <img width="300vw" src="./images/original_image_33.png">
+  <img width="300vw" src="./images/original_image_34.png">
+  <img width="300vw" src="./images/original_image_35.png">
+  <img width="300vw" src="./images/original_image_36.png">
+  <img width="300vw" src="./images/original_image_37.png">
 </p>
 
 Furthermore, other five images have $D$ which ranges from 'A' to 'F', but due to a defect void.
 <p align="center">
-  <img width="150vw" src="./images/original_image_38.png">
-  <img width="150vw" src="./images/original_image_39.png">
-  <img width="150vw" src="./images/original_image_40.png">
-  <img width="150vw" src="./images/original_image_41.png">
-  <img width="150vw" src="./images/original_image_42.png">
+  <img width="300vw" src="./images/original_image_38.png">
+  <img width="300vw" src="./images/original_image_39.png">
+  <img width="300vw" src="./images/original_image_40.png">
+  <img width="300vw" src="./images/original_image_41.png">
+  <img width="300vw" src="./images/original_image_42.png">
 </p>
 
 ## APPROACH
@@ -110,13 +110,13 @@ For solving our problem, a process consisting in four subsequent operations is i
 1) **Detect the bounding box.**
 The bounding box surrounding the barcode in the input image is detected. 
 <p align="center">
-  <img width="150vw" src="./images/originalImage_bb_22.png">
+  <img width="300vw" src="./images/originalImage_bb_22.png">
 </p>
 
 2) **Rotate the bounding box.** The image and the bounding box are rotated such that the barcode bars are now perfectly vertical.
 From this operation, the ROI image is computed, which is the sub-image containing the barcode, with the bars perfectly vertical. Basically, the ROI image is the rotated image cropped around the rotated barcode. *Remark: the ROI image is gray-scale.*
 <p align="center">
-  <img width="150vw" src="./images/rotatedImage_rotatedbb_22.png">
+  <img width="300vw" src="./images/rotatedImage_rotatedbb_22.png">
 </p>
 
 3) **Refine the ROI image.** The ROI image is refined, according to the standard explained before.
@@ -125,9 +125,9 @@ From this operation, the ROI image is computed, which is the sub-image containin
 
 In order to perform this refinement, the precise and complete structure of the barcode is computed: every dimension about each bar is computed. 
 <p align="center">
-  <img width="150vw" src="./images/barcode_structure_22.png">
-  <img width="150vw" src="./images/refined_roi_image_quantities_22.png">
-  <img width="150vw" src="./images/refined_roi_image_22.png">
+  <img width="300vw" src="./images/barcode_structure_22.png">
+  <img width="300vw" src="./images/refined_roi_image_quantities_22.png">
+  <img width="300vw" src="./images/refined_roi_image_22.png">
 </p> 
 
 4) **Compute the quality parameters**
@@ -142,8 +142,8 @@ As explained before, the following quality parameters are computed on each scanl
     - Symbolic grade and numerical value for the entire scanline
 
 <p align="center">
-  <img width="150vw" src="./images/refined_roi_image_scanlines_22.png">
-  <img width="150vw" src="./images/scanlines_scanReflectanceProfiles_22.png">
+  <img width="300vw" src="./images/refined_roi_image_scanlines_22.png">
+  <img width="300vw" src="./images/scanlines_scanReflectanceProfiles_22.png">
 </p> 
 
 Finally, an overall symbolic grade and an overall numerical value are assigned to the whole barcode.
