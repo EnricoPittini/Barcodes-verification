@@ -13,39 +13,48 @@ def build_output_file(detection_dict, rotation_dict, refinement_dict, overall_qu
 
     Parameters
     ----------
-    detection_dict : _type_
-        _description_
-    rotation_dict : _type_
-        _description_
-    refinement_dict : _type_
-        _description_
-    overall_quality_parameters_dict : _type_
-        _description_
-    image_name : _type_
-        _description_
+    detection_dict : dict
+        Dictionary containing the information and results obtained from the first operation, i.e. from the detection of the 
+        barcode. 
+        See the `verify_barcode` and `detect_boundingBox` functions.
+    rotation_dict : dict
+        Dictionary containing the information and results obtained from the second operation, i.e. from the rotation of the 
+        barcode. 
+        See the `verify_barcode` and `rotate_boundingBox` functions.
+    refinement_dict : dict
+        Dictionary containing the information and results obtained from the third operation, i.e. from the refinement of the 
+        ROI image. 
+        See the `verify_barcode` and `refine_boundingBox` functions.
+    overall_quality_parameters_dict : dict
+        Dictionary containing the computed quality parameters. 
+        See the `verify_barcode` and `compute_quality_parameters` functions.
+    image_name : str
+        Name of the input image
     n_scanlines : int, optional
-        _description_, by default 10
+        Number of scanlines used for computing the quality parameters, by default 10
     output_file_name : _type_, optional
-        _description_, by default None
+        Name of the optional output file, by default None.
+        If None, the output file name is 'output <NAME OF THE IMAGE>'
     output_file_type : str, optional
-        _description_, by default 'excel 1'
+        Type of the optional output file, by default 'excel 1'.
+        Three possibilites:
+        - 'excel 1': excel file containing the information recquested in the description of the project
+        - 'excel 2': richier excel file, containing almost all the computed quantities.
+        - 'json': exhaustive json file containing all the computed information. WARNING: the creation of the file can take
+                  a lot of time.
     output_folder_path : str, optional
-        _description_, by default './out'
+        Path of the folder for the optional output file, by default './out'
 
     Raises
     ------
     ValueError
-        _description_
+        If a wrong `output_file_type` is given
     """
-
-    #output_folder_path = os.path.normpath(output_folder_path)
 
     if output_file_name is None:
         output_file_name = 'output ' + image_name
     output_file_name += '.xlsx' if 'excel' in output_file_type else '.json'
     output_path = os.path.join(output_folder_path, output_file_name)
-
-    #print(output_path)
     
     if output_file_type=='excel 1':
         global_quantities_df = pd.DataFrame({
@@ -79,8 +88,6 @@ def build_output_file(detection_dict, rotation_dict, refinement_dict, overall_qu
             'bb_points_sorted_rot_ref': [refinement_dict['bb_points_sorted_rot_ref']]
         })
         
-        #barcode_global_structure_df = pd.DataFrame(_compute_barsSpaces_widths(refinement_dict['barcode_structure_dict']))
-        #barcode_global_structure_df.index.name = 'bars_spaces'
         barcode_global_structure_df = pd.DataFrame({
             'X' : [refinement_dict['barcode_structure_dict']['X']],
             'height': [refinement_dict['barcode_structure_dict']['height']],
