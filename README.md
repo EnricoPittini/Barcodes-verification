@@ -81,7 +81,7 @@ Finally, there are images in which the defect, i.e. $D$, is particularly bad on 
 
 More specifically, five images are particularly interesting for $D$, since its grade ranges from 'A' to 'F', due to a defect spot: images 'UPC#13', 'UPC#14', 'UPC#15', 'UPC#16', 'UPC#17'.
 
-Furthermore, other five images have $D$ which ranges from 'A' to 'F', but due to a defect void: images 'UPC#18', 'UPC#19', 'UPC#20', 'UPC#21', 'UPC#2'.
+Furthermore, other five images have $D$ which ranges from 'A' to 'F', but due to a defect void: images 'UPC#18', 'UPC#19', 'UPC#20', 'UPC#21', 'UPC#22'.
 
 ## Approach
 For solving our problem, a process consisting in four subsequent operations is implemented. For more information, see the report of this project. *The following shown examples are about the image 'UPC#01'.*

@@ -144,6 +144,8 @@ def _rotate_image_boundingBox(image, bb_points_sorted, bb_width, bb_height):
         # Rotate the image, by angle `angle` and with respect to the centre `point1`
         image_rot, rot_mat = _rotate_image(image, angle=angle, center=point1)
     
+    angle *= -1
+
     return image_rot, bb_points_sorted_rot, angle
 
 
