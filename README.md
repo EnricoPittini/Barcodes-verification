@@ -174,7 +174,7 @@ In particular, the information is structured in the following sheets.
 Actually, this is the basic output format. The user can specify to build a richer output file, containing more information. 
 
 ## Interface
-The most important functions are now briefly introduced.
+The most important functions are now briefly introduced. Each of them is contained in a separate Python file, since they can involve several auxiliar functions, with several lines of code.
 
 ### Barcode verification
 Function `verify_barcode`. This is the main function, which performs the overall process of barcode verification. So, it performs all the four recquired steps. Basically, it consists in the subsequent application of the four functions `detect_boundingBox`, `rotate_boundingBox`, `refine_ROIimage`, `compute_quality_parameters`.
@@ -230,95 +230,27 @@ The following are the plots.
 ## Repository structure
 
     .
-    ├── images                              # Plots of the performances of different models for the different approaches
-    │   ├── cp
-    │   ├── lp
-    │   ├── sat
-    │   └── smt
-    ├── instances                           
-    │   ⋮
-    │   └── ins-*-.txt                      # Instances to solve in `.txt` format
-    ├── results                             # Json results of the performances of different models for the given approaches
-    │   ├── cp
-    │   ├── lp
-    │   ├── sat
-    │   └── smt
-    ├── out                                 # Solutions for the given instances using different approaches
-    │   ├── cp
-    │   ├── cp-rotation
-    │   ├── lp 
-    │   ├── lp-rotation
-    │   ├── sat
-    │   ├── sat-rotation
-    │   ├── smt
-    │   └── smt-rotation
-    ├── src
-    │   ├── cp                      
-    │   │   ├── data                        # Directory containing data examples for the problem in CP
-    │   │   ├── models                      # Directory containing the models solving the problem in CP
-    │   │   ├── rotation_models             # Directory containing the models solving the problem in CP considering rotations
-    │   │   ├── solvers                     # Directory containing the solver configurations for CP
-    │   │   ├── MODELS RECAP.md             # Recap of the CP MiniZinc models
-    │   │   └── project_cp.mzp              # MiniZinc CP project
-    │   ├── lp
-    │   │   ⋮
-    │   │   ├── model_*.mod                 # AMPL model solving the problem in LP
-    │   │   ├── MODELS RECAP.md             # Recap of the LP AMPL models
-    │   │   └── position_and_covering.py    # Script applying the Position and Covering technique for LP
-    │   ├── sat
-    │   │   ⋮
-    │   │   ├── encoding_*.py               # Encoding solving the problem in LP
-    │   │   ├── ENCODINGS RECAP.md          # Recap of the SAT encodings
-    │   │   └── sat_utils.py                # Script containing useful functions for SAT
-    │   ├── scripts                      
-    │   │   ├── compare_cp_models.py        # Script to compare the results of CP models on the instances
-    │   │   ├── compare_lp_models.py        # Script to compare the results of LP models on the instances
-    │   │   ├── compare_sat_encodings.py    # Script to compare the results of SAT encodings on the instances
-    │   │   ├── compare_smt_encodings.py    # Script to compare the results of SMT encodings on the instances
-    │   │   ├── execute_cp.py               # Script to solve an instance using CP
-    │   │   ├── execute_lp.py               # Script to solve an instance using LP
-    │   │   ├── execute_sat.py              # Script to solve an instance using SAT
-    │   │   ├── execute_smt.py              # Script to solve an instance using SMT
-    │   │   ├── plot_comparisons.py         # Script to plot the results of the use of different models on the instances
-    │   │   ├── solve_all_instances_cp.py   # Script solving all instances with CP
-    │   │   ├── solve_all_instances_lp.py   # Script solving all instances with LP
-    │   │   ├── solve_all_instances_sat.py  # Script solving all instances with SAT
-    │   │   ├── solve_all_instances_smt.py  # Script solving all instances with SMT
-    │   │   ├── solve_all_instances.py      # Script solving all instances with a desired methodology
-    │   │   ├── unify_jsons.py
-    │   │   ├── utils.py                    # Script containing useful functions
-    │   │   └── visualize.py                # Script to visualize a solved instance
-    │   └── smt
-    │       ├── solvers                     # Directory containing the solvers executable files for SMT
-    │       │   ⋮
-    │       ├── encoding_*.py               # Encoding solving the problem in SMT
-    │       ├── ENCODINGS RECAP.md          # Recap of the SMT encodings
-    │       └── smt_utils.py                # Script containing useful functions for SMT
-    ├── assignment.pdf                      # Assignment of the project
-    ├── .gitattributes
+    ├── dataset    # Input images and excel file containing the true quality parameters  
+    ├── images  # Images shown in this README or in the notebooks                           
+    ├── src  
+    │   ├── build_output_file.py
+    │   ├── compute_quality_parameters.py
+    │   ├── detect_boundingBox.py
+    │   ├── refine_ROIimage.py
+    │   └── rotate_boundingBox.py
+    │   └── utils.py
+    │   └── verify_barcode.py
     ├── .gitignore
+    ├── guide-barcode-verification.pdf
     ├── LICENSE
-    ├── report.pdf                          # Report of the project
+    ├── Linear Barcodes Verification Project.pdf
     └── README.md
 
 ## Dependencies
-It is required for the execution of the CP models to install [_MiniZinc_](https://www.minizinc.org/doc-2.2.3/en/installation.html) and add the executable to the environment variable PATH. 
-
-To execute SAT the *Z3* theorem prover for python is required. 
-The simplest way to install it is to use Python's package manager pip:
-```sh
-pip install z3-solver
-```
-
-The SMT solvers executables are already present in the directory `src/smt/solvers`.
-
-For LP the [_AMPL_](https://ampl.com/products/ampl/) software and license are required. Moreover at least one of the following solvers is needed: [_Gurobi_](https://www.gurobi.com/products/gurobi-optimizer/), [_CPLEX_](https://www.ibm.com/analytics/cplex-optimizer) and [_Cbc_](https://github.com/coin-or/Cbc). Note that some scripts require the installation of *Gurobi* or *CPLEX*. Finally, the installation of the *amplpy* library is necessary. It can easily be installed through pip:
-```sh
-pip install amplpy
-```
-
-If not already installed Python libraries *pandas* and *Numpy* shall be installed.
-
+- [NumPy](https://numpy.org/)
+- [SciPy](https://scipy.org/)
+- [OpenCV](https://pypi.org/project/opencv-python/)
+- [Matplotlib](https://matplotlib.org/)
 
 ## License
 
