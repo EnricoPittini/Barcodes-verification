@@ -34,7 +34,7 @@ The quality parameters are computed one each scanline, by considering the *scan 
 - Modulation, i.e. $M$.
 - Defect, i.e. $D$. For computing it, also the maximum Element Reflectance Non-uniformity, i.e. $ERN_{\text{max}}$, is taken into account.
 <p align="center">
-  <img width="450vw" src="./images/scanlines_scanReflectanceProfiles_22.png">
+  <img width="550vw" src="./images/scanlines_scanReflectanceProfiles_22.png">
 </p>
 
 For each of these parameters, a numerical value is computed, and a symbolic grade between 'A' and 'F' is assigned, by using specific rules ('A' means very good, 'F' means very bad). 
@@ -143,7 +143,7 @@ As explained before, the following quality parameters are computed on each scanl
 
 <p align="center">
   <img width="300vw" src="./images/refined_roi_image_scanlines_22.png">
-  <img width="450vw" src="./images/scanlines_scanReflectanceProfiles_22.png">
+  <img width="550vw" src="./images/scanlines_scanReflectanceProfiles_22.png">
 </p> 
 
 Finally, an overall symbolic grade and an overall numerical value are assigned to the whole barcode.
