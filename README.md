@@ -50,16 +50,16 @@ Set of images containing barcodes, on which the application can be tested. Also 
 ### General overview
 Different kinds of barcodes are present. In addition, there are images in which the barcode is particularly rotated or scaled. There are also images in which the barcode has the bars which are horizontally aligned instead of vertically. Let's see some examples.
 <p align="center">
-  <img width="300vw" src="./dataset/C39_4.4LOW.bmp">
-  <img width="300vw" src="./dataset/EAN128-MASTER IMGB.bmp">
+  <img width="300vw" src="./dataset/C39_4.4LOW.BMP">
+  <img width="300vw" src="./dataset/EAN128-MASTER IMGB.BMP">
   <img width="300vw" src="./images/UPC06.BMP">
-  <img width="300vw" src="./dataset/EAN-UPC-DEFECTS IMGB.bmp">
+  <img width="300vw" src="./dataset/EAN-UPC-DEFECTS IMGB.BMP">
 </p>
 
 ### Bad contrast images
 There are images in which the contrast, i.e. $SC$, is particularly bad on purpose. 
 <p align="center">
-  <img width="300vw" src="./dataset/EAN-UPC-CONTRAST IMGB.bmp">
+  <img width="300vw" src="./dataset/EAN-UPC-CONTRAST IMGB.BMP">
   <img width="300vw" src="./images/UPC07.BMP">
 </p>
 More specifically, five images are particularly interesting for $SC$, since its grade ranges from 'A' to 'F': images 'UPC#03', 'UPC#04', 'UPC#05', 'UPC#06', 'UPC#07'.
@@ -67,7 +67,7 @@ More specifically, five images are particularly interesting for $SC$, since its 
 ### Bad modulation images
 There are images in which the modulation, i.e. $M$, is particularly bad on purpose. For obtaining a bad $M$, an artifact has been added to the barcode, whose purpose is to decrease the intensity change between a bar and a space.
 <p align="center">
-  <img width="400vw" src="./images/UPC11.BMP">
+  <img width="500vw" src="./images/UPC11.BMP">
 </p>
 
 More specifically, five images are particularly interesting for $M$, since its grade ranges from 'A' to 'F': images 'UPC#08', 'UPC#09', 'UPC#10', 'UPC#11', 'UPC#12'. 
@@ -75,8 +75,8 @@ More specifically, five images are particularly interesting for $M$, since its g
 ### Bad defect images
 Finally, there are images in which the defect, i.e. $D$, is particularly bad on purpose. For obtaining a bad $D$, a "fake vertical bar" has been added to the barcode, either inside a space or a bar, for increasing the range of different intensities inside that barcode element. This "fake vertical bar" is called *defect*, and it can be either inside a space, i.e. *defect spot*, or inside a bar, i.e. *defect void*.
 <p align="center">
-  <img width="400vw" src="./dataset/I25-DEFECTS IMGB.BMP">
-  <img width="400vw" src="./images/UPC22.bmp">
+  <img width="500vw" src="./dataset/I25-DEFECTS IMGB.BMP">
+  <img width="500vw" src="./images/UPC22.BMP">
 </p>
 
 More specifically, five images are particularly interesting for $D$, since its grade ranges from 'A' to 'F', due to a defect spot: images 'UPC#13', 'UPC#14', 'UPC#15', 'UPC#16', 'UPC#17'.
