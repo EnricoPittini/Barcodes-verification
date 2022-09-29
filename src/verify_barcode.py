@@ -44,7 +44,8 @@ def verify_barcode(image_path, use_same_threshold=False, compute_barcode_structu
        - Minimum Edge Contrast, i.e. EC_min.
        - MODULATION.
        - DEFECT. For computing it, also the maximum Element Reflectance Non-uniformity, i.e. ERN_max, is taken into account.
-       For each of these parameters, a numerical value is computed, and a symbolic grade is assigned, between 'A' and 'F'. 
+       For each of these parameters, a numerical value is computed, and a symbolic grade between 'A' and 'F' is assigned, by 
+       using specific rules.
        In addition, a symbolic grade and a numerical value are assigned to the whole scanline.
        Finally, an overall symbolic grade and an overall numerical value are assigned to the whole barcode.
        See the `compute_quality_parameters` function.

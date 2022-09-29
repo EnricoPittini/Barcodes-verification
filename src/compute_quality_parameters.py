@@ -19,7 +19,8 @@ def compute_quality_parameters(roi_image_ref, n_scanlines=10, visualize_scanline
     - Minimum Edge Contrast, i.e. EC_min.
     - MODULATION.
     - DEFECT. For computing it, also the maximum Element Reflectance Non-uniformity, i.e. ERN_max, is taken into account.
-    For each of these parameters, a numerical value is computed, and a symbolic grade is assigned, between 'A' and 'F'. 
+    For each of these parameters, a numerical value is computed, and a symbolic grade between 'A' and 'F' is assigned, by 
+    using specific rules.
     In addition, a symbolic grade and a numerical value are assigned to the whole scanline.
 
     Finally, an overall symbolic grade and an overall numerical value are assigned to the whole barcode.
@@ -123,7 +124,7 @@ def compute_quality_parameters(roi_image_ref, n_scanlines=10, visualize_scanline
             axs[i//2,i%2].plot([ERNmax_peak_index, ERNmax_valley_index], 
                                [ERNmax_peak_value, ERNmax_valley_value], 
                                 c='k', label='ERN_max')
-            axs[i//2,i%2].set_title(f'Scanline {i}, quality parameters')
+            axs[i//2,i%2].set_title(f'Scanline {i}, scan reflectance profile')
             axs[i//2,i%2].legend()
 
     # Compute the overall quality parameters dictionary, given the list of quality parameters dictionary on the single 
