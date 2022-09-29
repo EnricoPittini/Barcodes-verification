@@ -67,7 +67,7 @@ More specifically, five images are particularly interesting for $SC$, since its 
 ### Bad modulation images
 There are images in which the modulation, i.e. $M$, is particularly bad on purpose. For obtaining a bad $M$, an artifact has been added to the barcode, whose purpose is to decrease the intensity change between a bar and a space.
 <p align="center">
-  <img width="4000vw" src="./images/UPC11.BMP">
+  <img width="400vw" src="./images/UPC11.BMP">
 </p>
 
 More specifically, five images are particularly interesting for $M$, since its grade ranges from 'A' to 'F': images 'UPC#08', 'UPC#09', 'UPC#10', 'UPC#11', 'UPC#12'. 
