@@ -40,7 +40,7 @@ def build_output_file(detection_dict, rotation_dict, refinement_dict, overall_qu
         Three possibilites:
         - 'excel 1': excel file containing the information recquested in the description of the project
         - 'excel 2': richier excel file, containing all the computed quantities, except for the images(i.e. rotated input 
-                  image, ROI image and refined ROI image.)
+                     image, ROI image and refined ROI image.)
         - 'json': exhaustive json file containing all the computed information, except for the images (i.e. rotated input 
                   image, ROI image and refined ROI image.)
     output_folder_path : str, optional
@@ -50,6 +50,82 @@ def build_output_file(detection_dict, rotation_dict, refinement_dict, overall_qu
     ------
     ValueError
         If a wrong `output_file_type` is given
+
+    Notes
+    -----
+    Notes about the structure of the output file.
+
+    Regarding the json file, it has the exact same structure of the dictionaries `detection_dict`, `rotation_dict`, 
+    `refinement_dict`, `overall_quality_parameters_dict`. The only difference is that it does not contain the images (i.e. 
+    rotated input image, ROI image and refined ROI image.)
+
+    Regarding the excel output files, the information is structured into different sheets.
+
+    Output file type 'excel 1'. The sheets are the following.
+    - Global quantities
+        It contains the following information.
+        * Name of the image
+        * Bounding box coordinates
+        * Centre of the bounding box
+        * Angle of the rotation
+        * X dimension (i.e. minimum width of a barcode bar)
+        * Height of the barcode (i.e. minimum height of a barcode bar)
+        * Overall symbolic grade of the barcode
+    - Bars/spaces widths
+        For each bar and space, its width is reported, in units by X dimension.
+        It is a list, where the first element refers to the first bar, and the last element to the last bar.
+        Basically, sequence of bars/spaces from left to right.
+    - Scanlines quality parameters
+        For each scanline, its quality parameters are reported. Namely:
+        * R_min and R_min_grade
+        * SC and SC_grade
+        * EC_min and EC_min_grade
+        * MODULATION and MODULATION_grade
+        * DEFECT and DEFECT_grade
+        * Symbolic grade and numerical value
+
+    Output file type 'excel 2'. The sheets are the following.
+    - General quantities
+        It contains the following information.
+        * Name of the image
+        * Bounding box coordinates
+        * Angle of the rotation
+        * Rotated bounding box coordinates        
+        * Rotated and refined bounding box coordinates        
+    - Barcode global structure
+        It contains the following information. It is important to remark that these quantities are computed with respect to
+        the ROI image (not refined): this is the reference system.
+        * X dimension (i.e. minimum width of a barcode bar)
+        * Height of the barcode (i.e. minimum height of a barcode bar)
+        * Horizontal coordinate of the first pixel of the first barcode bar
+        * Horizontal coordinate of the last pixel of the last barcode bar
+        * Minimum half height of a bar from the middle of the ROI image upward.
+        * Minimum half height of a bar from the middle of the ROI image downward.
+    - Bars local structure
+        For each barcode bar, from the leftmost to the rightmost, it contains the following information. It is important to 
+        remark that these quantities are computed with respect to the ROI image (not refined): this is the reference system.
+        * Horixontal coordinate of the first pixel of that bar.
+        * Width of that bar.
+        * Height of that bar.
+        * Half height from the middle of the ROI image upward of that bar.
+        * Half height from the middle of the ROI image downward of that bar.
+    - Global quality parameters
+        It contains the following information.
+        * OVERALL_NUMERICAL_VALUE and OVERALL_SYMBOL_GRADE
+        * R_min_MEAN and R_min_MEAN_grade (mean computed over all the scanlines)
+        * SC_MEAN and SC_MEAN_grade (mean computed over all the scanlines)
+        * EC_min_MEAN and EC_min_MEAN_grade (mean computed over all the scanlines)
+        * MODULATION_MEAN and MODULATION_MEAN_grade (mean computed over all the scanlines)
+        * DEFECT_MEAN and DEFECT_MEAN_grade (mean computed over all the scanlines)
+    - Scanlines quality parameters
+        For each scanline, its quality parameters are reported. Namely:
+        * R_min and R_min_grade
+        * SC and SC_grade
+        * EC_min and EC_min_grade
+        * MODULATION and MODULATION_grade
+        * DEFECT and DEFECT_grade
+        * Symbolic grade and numerical value
+
     """
 
     if output_file_name is None:
