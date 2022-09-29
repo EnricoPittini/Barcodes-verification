@@ -6,6 +6,8 @@ For more theoretical information, check out the following documents.
 - `guide-barcode-verification.pdf`: description of linear barcodes print quality verification.
 - `report.pdf`: description of the solution.
 
+Instead, for an in-depth view of the functions interfaces, check out the documentation and the doc-strings.
+
 ## Description
 Given an image containing a barcode, the task consists in verifying the print quality of the barcode, by computing some quality parameters. 
 
@@ -105,7 +107,7 @@ Furthermore, other five images have $D$ which ranges from 'A' to 'F', but due to
   <img width="300vw" src="./images/original_image_42.png">
 </p>
 
-## APPROACH
+## Approach
 For solving our problem, a process consisting in four subsequent operations is implemented. For more information, see the report of this project. *The following shown examples are about the image 'UPC#01'.*
 1) **Detect the bounding box.**
 The bounding box surrounding the barcode in the input image is detected. 
@@ -148,128 +150,82 @@ As explained before, the following quality parameters are computed on each scanl
 
 Finally, an overall symbolic grade and an overall numerical value are assigned to the whole barcode.
 
+## Output file
+According to the project description, an excel output file must be generated, containing the information and results of the applied process.
 
+In particular, the information is structured in the following sheets.
+- **Global quantities.** It contains the following information.
+    * Name of the image
+    * Bounding box coordinates
+    * Centre of the bounding box
+    * Angle of the rotation
+    * $X$ dimension (i.e. minimum width of a barcode bar)
+    * Height of the barcode (i.e. minimum height of a barcode bar)
+    * Overall symbolic grade of the barcode
+- **Bars/spaces widths** For each bar and space, its width is reported, in units by $X$ dimension. It is a list, where the first element refers to the first bar, and the last element to the last bar. Basically, sequence of bars/spaces from left to right.
+- **Scanlines quality parameters** For each scanline, its quality parameters are reported. Namely:
+    * $R_{\text{min}}$ and its symbolic grade
+    * $SC$ and its symbolic grade
+    * $EC_{\text{min}}$ and its symbolic grade
+    * $M$ and its symbolic grade
+    * $D$ and its symbolic grade
+    * Symbolic grade and numerical value 
 
+Actually, this is the basic output format. The user can specify to build a richer output file, containing more information. 
 
-# Models list
-The names of the models and encodings presented inside the `src` subfolders are numerical and therefore not easy to understand. The files `MODELS RECAP.md` and `ENCODINGS RECAP.md` inside the `src` subfolders provide a description of each model (or encoding) name.
+## Interface
+The most important functions are now briefly introduced.
 
-The following is the list of the best models (or encodings) for each approach:
-* **CP**:
-  - Without rotation: `model_6D1`
-  - With rotation: `model_r_7B`
-* **LP**:
-  - Without rotation: `model_grid`, *CPLEX* solver and *symmetry breaking* applied
-  - With rotation: `model_r_0`, *Gurobi* solver and *symmetry breaking* applied
-* **SAT**:
-  - Without rotation: `encoding_10B`
-  - With rotation: `encoding_11B`
-* **SMT**:
-  - Without rotation: `encoding_2C`, *z3* solver
-  - With rotation: `encoding_5B`, *z3* solver
+### Barcode verification
+Function `verify_barcode`. This is the main function, which performs the overall process of barcode verification. So, it performs all the four recquired steps. Basically, it consists in the subsequent application of the four functions `detect_boundingBox`, `rotate_boundingBox`, `refine_ROIimage`, `compute_quality_parameters`.
+
+Optionally, the user can get information about the execution time of each operation. Furthermore, he can also get plots for visualizing the results of each operation.
+
+The following functions are more specific and lower-level functions, for performing the recquired sub-tasks
+
+### Bounding box detection
+Function `detect_boundingBox`. It detects the bounding box surrounding the barcode.
+
+### Bounding box rotation
+Function `rotate_boundingBox`. It rotates the input image and the bounding box such that the bars become perfectly vertical.
+
+### ROI image refinement
+Function `refine_ROIimage`. It refines the ROI image, according to the recquired standard format. In order to do so, the complete barcode structure is computed.
+
+### Quality parameters computation
+Function `compute_quality_parameters`. It computes the quality parameters on the barcode.
+
+### Output file building
+Function `build_output_file`. It build the output file.
 
 ## Usage
-### Execute models
-```sh
-# Execute instance "ins-3" with CP "model_6D1"
-python src/scripts/execute_cp.py model_6D1 ins-3 --time-limit 300
-```
-```sh
-# Execute instance "ins-3" with LP "model_1" and solver "Gurobi"
-python src/scripts/execute_lp.py model_1 ins-3 gurobi --time-limit 300
-```
-```sh
-# Execute instance "ins-3" with SAT "encoding_10B"
-python src/scripts/execute_sat.py encoding_10B ins-3 --time-limit 300
-```
-```sh
-# Execute instance "ins-3" with SMT "encoding_2C" and solver "z3"
-python src/scripts/execute_smt.py encoding_2C ins-3 z3 --time-limit 300
+Example of application of the `verify_barcode` function. It returns four dictionaries, containing the information and results of the four operations. Optionally, the user is asking to print the timing information and to make two specific plots.
+```python
+# Verify the barcode print quality of the given input image
+
+image_path = './dataset/UPC#01.bmp'
+visualization_dict = {
+  'visualize_refinedRoi': True,
+  'visualize_scanlines_qualityParameters':True
+}
+
+detection_dict, rotation_dict, refinement_dict, overall_quality_parameters_dict = verify_barcode(image_path, visualization_dict=visualization_dict, verbose_timing=False, create_output_file=True)
 ```
 
-### Compare models
-```sh
-# Compare the results of the first 10 instances with CP models "model_6D1" and "model_r_7B"
-python src/scripts/compare_cp_models.py --models-list model_6D1 model_r_7B -lb 1 -ub 10
-```
-```sh
-# Compare the results of the first 10 instances with LP models "model_1" and "model_r_0" and solvers "CPLEX" and "Gurobi"
-python src/scripts/compare_lp_models.py --models-list model_1 model_r_0 --solvers-list cplex gurobi -lb 1 -ub 10
-```
-```sh
-# Compare the results of the first 10 instances with SAT encodings "encoding_10B" and "encoding_11B"
-python src/scripts/compare_sat_encodings.py --encodings-list encoding_10B encoding_11B -lb 1 -ub 10
-```
-```sh
-# Compare the results of the first 10 instances with SMT encodings "encoding_2C" and "encoding_5B" and solvers "z3" and "cvc5"
-python src/scripts/compare_smt_encodings.py --encodings-list encoding_2C encoding_5B --solvers-list z3 cvc5 -lb 1 -ub 10
-```
-### Solve all instances
-```sh
-# Solve all instances accounting for the rotation of the circuits with the best model for solver CP. 
-python src/scripts/solve_all_instances.py cp --rotation
+The following is the obtained timing information.
+```shell
+TIMING INFORMATION
+	Detect bounding box: 0.012889862060546875
+	Rotate bounding box: 0.01150059700012207
+	Refine ROI image: 0.04480409622192383
+	Compute quality parameters: 0.23713088035583496
 ```
 
-## Dependencies
-It is required for the execution of the CP models to install [_MiniZinc_](https://www.minizinc.org/doc-2.2.3/en/installation.html) and add the executable to the environment variable PATH. 
-
-To execute SAT the *Z3* theorem prover for python is required. 
-The simplest way to install it is to use Python's package manager pip:
-```sh
-pip install z3-solver
-```
-
-The SMT solvers executables are already present in the directory `src/smt/solvers`.
-
-For LP the [_AMPL_](https://ampl.com/products/ampl/) software and license are required. Moreover at least one of the following solvers is needed: [_Gurobi_](https://www.gurobi.com/products/gurobi-optimizer/), [_CPLEX_](https://www.ibm.com/analytics/cplex-optimizer) and [_Cbc_](https://github.com/coin-or/Cbc). Note that some scripts require the installation of *Gurobi* or *CPLEX*. Finally, the installation of the *amplpy* library is necessary. It can easily be installed through pip:
-```sh
-pip install amplpy
-```
-
-If not already installed Python libraries *pandas* and *Numpy* shall be installed.
-
-## Interfaces
-
-### Execute models
-The `execute_*.py` scripts all present the following positional arguments:
-* `model`: The model to execute (`encoding` for *SAT* and *SMt*)
-* `instance`: The instance to solve
-
-And the following optional parameters:
-* `output-folder-path`: The path in which the output file is stored
-* `output-name`: The name of the output solution
-* `--time-limit`: The allowed time to solve the task in seconds
-* `--no-create-output`: Skip the creation of the output solution
-* `--no-visualize-output`: Skip the visualization of the output solution (defaults as true if `--no-create-output` is passed).
-
-Moreover `execute_lp.py` presents the following parameters:
-* `solver`: The solver used for optimization
-* `--use-symmetry`: Break symmetries in the presolve process.
-* `--use-dual`: Use the dual model.
-* `--use-no-presolve`: Avoid AMPL presolving process.
-
-Finally, `execute_smt.py` presents the following parameter:
-* `solver`: The solver used for optimization.
-
-### Compare models
-The `compare_*.py` scripts all present the following positional arguments:
-* `output-name`: The name of the output solution
-* `output-folder-path`: The path in which the output file is stored
-
-And the following optional parameters:
-* `--models-list`: List of models to compare
-* `--instances-lower-bound`: Lower bound of instances to solve (default 1)
-* `--instances-upper-bound`: Upper bound of instances to solve (default 40)
-* `--no-visualize`: Do not visualize the obtained comparisons
-
-Moreover `compare_lp_models.py` presents the following parameters:
-* `--solvers-list`: List of solvers to use for comparison (default all solvers)
-* `--use-symmetry`: Break symmetries in the presolve process.
-* `--use-dual`: Use the dual model.
-* `--use-no-presolve`: Avoid AMPL presolving process.
-
-Finally, `compare_smt_encodings.py` presents the following parameter:
-* `--solvers-list`: List of solvers to use for comparison (default *z3*)
+The following are the plots.
+<p align="center">
+  <img width="300vw" src="./images/refined_roi_image_22.png">
+  <img width="550vw" src="./images/scanlines_scanReflectanceProfiles_22.png">
+</p> 
 
 ## Repository structure
 
@@ -345,17 +301,24 @@ Finally, `compare_smt_encodings.py` presents the following parameter:
     ├── report.pdf                          # Report of the project
     └── README.md
 
-## Versioning
+## Dependencies
+It is required for the execution of the CP models to install [_MiniZinc_](https://www.minizinc.org/doc-2.2.3/en/installation.html) and add the executable to the environment variable PATH. 
 
-Git is used for versioning.
+To execute SAT the *Z3* theorem prover for python is required. 
+The simplest way to install it is to use Python's package manager pip:
+```sh
+pip install z3-solver
+```
 
-## Group members
+The SMT solvers executables are already present in the directory `src/smt/solvers`.
 
-|  Name           |  Surname  |     Email                           |    Username                                             |
-| :-------------: | :-------: | :---------------------------------: | :-----------------------------------------------------: |
-| Antonio         | Politano  | `antonio.politano2@studio.unibo.it` | [_S1082351_](https://github.com/S1082351)               |
-| Enrico          | Pittini   | `enrico.pittini@studio.unibo.it`    | [_EnricoPittini_](https://github.com/EnricoPittini)     |
-| Riccardo        | Spolaor   | `riccardo.spolaor@studio.unibo.it`  | [_RiccardoSpolaor_](https://github.com/RiccardoSpolaor) |
+For LP the [_AMPL_](https://ampl.com/products/ampl/) software and license are required. Moreover at least one of the following solvers is needed: [_Gurobi_](https://www.gurobi.com/products/gurobi-optimizer/), [_CPLEX_](https://www.ibm.com/analytics/cplex-optimizer) and [_Cbc_](https://github.com/coin-or/Cbc). Note that some scripts require the installation of *Gurobi* or *CPLEX*. Finally, the installation of the *amplpy* library is necessary. It can easily be installed through pip:
+```sh
+pip install amplpy
+```
+
+If not already installed Python libraries *pandas* and *Numpy* shall be installed.
+
 
 ## License
 
