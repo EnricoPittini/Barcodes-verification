@@ -67,7 +67,7 @@ More specifically, five images are particularly interesting for $SC$, since its 
 ### Bad modulation images
 There are images in which the modulation, i.e. $M$, is particularly bad on purpose. For obtaining a bad $M$, an artifact has been added to the barcode, whose purpose is to decrease the intensity change between a bar and a space.
 <p align="center">
-  <img width="500vw" src="./images/original_image_31.png">
+  <img width="650vw" src="./images/original_image_31.png">
 </p>
 
 More specifically, five images are particularly interesting for $M$, since its grade ranges from 'A' to 'F': images 'UPC#08', 'UPC#09', 'UPC#10', 'UPC#11', 'UPC#12'. 
@@ -75,8 +75,8 @@ More specifically, five images are particularly interesting for $M$, since its g
 ### Bad defect images
 Finally, there are images in which the defect, i.e. $D$, is particularly bad on purpose. For obtaining a bad $D$, a "fake vertical bar" has been added to the barcode, either inside a space or a bar, for increasing the range of different intensities inside that barcode element. This "fake vertical bar" is called *defect*, and it can be either inside a space, i.e. *defect spot*, or inside a bar, i.e. *defect void*.
 <p align="center">
-  <img width="650vw" src="./images/original_image_18.png">
-  <img width="550vw" src="./images/original_image_42.png">
+  <img width="650vw" src="./images/original_image_37.png">
+  <img width="650vw" src="./images/original_image_42.png">
 </p>
 
 More specifically, five images are particularly interesting for $D$, since its grade ranges from 'A' to 'F', due to a defect spot: images 'UPC#13', 'UPC#14', 'UPC#15', 'UPC#16', 'UPC#17'.
