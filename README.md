@@ -75,7 +75,7 @@ More specifically, five images are particularly interesting for $M$, since its g
 ### Bad defect images
 Finally, there are images in which the defect, i.e. $D$, is particularly bad on purpose. For obtaining a bad $D$, a "fake vertical bar" has been added to the barcode, either inside a space or a bar, for increasing the range of different intensities inside that barcode element. This "fake vertical bar" is called *defect*, and it can be either inside a space, i.e. *defect spot*, or inside a bar, i.e. *defect void*.
 <p align="center">
-  <img width="650vw" src="./images/original_image_37.png">
+  <img width="650vw" src="./images/original_image_18.png">
   <img width="650vw" src="./images/original_image_42.png">
 </p>
 
