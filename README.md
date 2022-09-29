@@ -6,9 +6,9 @@ For more theoretical information, check out the following documents.
 - `guide-barcode-verification.pdf`: description of linear barcodes print quality verification.
 - `report.pdf`: description of the solution.
 
-Instead, for an in-depth view of the functions interfaces, check out the documentation and the doc-strings.
+For an in-depth view of the functions interfaces, check out the documentation and the doc-strings.
 
-## Description
+## DESCRIPTION
 Given an image containing a barcode, the task consists in verifying the print quality of the barcode, by computing some quality parameters. 
 
 Since the the barcode in the input image can be rotated and can have different scales and since the input image can contain other objects apart from the barcode, the quality parameters must be computed on a standardized image. We refer to this image as "refined ROI image", since it perfectly fits the Region Of Interest (i.e. the barcode) and it is refined according to some standards. More specifically, the refined ROI image is the sub-image of the input image which has the following properties.
@@ -44,30 +44,30 @@ In addition, a symbolic grade and a numerical value are assigned to the whole sc
 
 Finally, an overall symbolic grade and an overall numerical value are assigned to the whole barcode.
 
-## Dataset
+## DATASET
 Set of images containing barcodes, on which the application can be tested. Also an excel file containing the true quality parameters of these images is present. This dataset has been provided by DATALOGIC. 
 
 ### General overview
 Different kinds of barcodes are present. In addition, there are images in which the barcode is particularly rotated or scaled. There are also images in which the barcode has the bars which are horizontally aligned instead of vertically. Let's see some examples.
 <p align="center">
-  <img width="300vw" src="./images/original_image_4.png">
-  <img width="300vw" src="./images/original_image_16.png">
-  <img width="300vw" src="./images/original_image_26.png">
-  <img width="300vw" src="./images/original_image_10.png">
+  <img width="300vw" src="./dataset/C39_4.4LOW.bmp">
+  <img width="300vw" src="./dataset/EAN128-MASTER IMGB.bmp">
+  <img width="300vw" src="./images/UPC06.BMP">
+  <img width="300vw" src="./dataset/EAN-UPC-DEFECTS IMGB.bmp">
 </p>
 
 ### Bad contrast images
 There are images in which the contrast, i.e. $SC$, is particularly bad on purpose. 
 <p align="center">
-  <img width="300vw" src="./images/original_image_8.png">
-  <img width="300vw" src="./images/original_image_27.png">
+  <img width="300vw" src="./dataset/EAN-UPC-CONTRAST IMGB.bmp">
+  <img width="300vw" src="./images/UPC07.BMP">
 </p>
 More specifically, five images are particularly interesting for $SC$, since its grade ranges from 'A' to 'F': images 'UPC#03', 'UPC#04', 'UPC#05', 'UPC#06', 'UPC#07'.
 
 ### Bad modulation images
 There are images in which the modulation, i.e. $M$, is particularly bad on purpose. For obtaining a bad $M$, an artifact has been added to the barcode, whose purpose is to decrease the intensity change between a bar and a space.
 <p align="center">
-  <img width="650vw" src="./images/original_image_31.png">
+  <img width="4000vw" src="./images/UPC11.BMP">
 </p>
 
 More specifically, five images are particularly interesting for $M$, since its grade ranges from 'A' to 'F': images 'UPC#08', 'UPC#09', 'UPC#10', 'UPC#11', 'UPC#12'. 
@@ -75,15 +75,15 @@ More specifically, five images are particularly interesting for $M$, since its g
 ### Bad defect images
 Finally, there are images in which the defect, i.e. $D$, is particularly bad on purpose. For obtaining a bad $D$, a "fake vertical bar" has been added to the barcode, either inside a space or a bar, for increasing the range of different intensities inside that barcode element. This "fake vertical bar" is called *defect*, and it can be either inside a space, i.e. *defect spot*, or inside a bar, i.e. *defect void*.
 <p align="center">
-  <img width="650vw" src="./images/original_image_18.png">
-  <img width="650vw" src="./images/original_image_42.png">
+  <img width="400vw" src="./dataset/I25-DEFECTS IMGB.BMP">
+  <img width="400vw" src="./images/UPC22.bmp">
 </p>
 
 More specifically, five images are particularly interesting for $D$, since its grade ranges from 'A' to 'F', due to a defect spot: images 'UPC#13', 'UPC#14', 'UPC#15', 'UPC#16', 'UPC#17'.
 
 Furthermore, other five images have $D$ which ranges from 'A' to 'F', but due to a defect void: images 'UPC#18', 'UPC#19', 'UPC#20', 'UPC#21', 'UPC#22'.
 
-## Approach
+## APPROACH
 For solving our problem, a process consisting in four subsequent operations is implemented. For more information, see the report of this project. *The following shown examples are about the image 'UPC#01'.*
 1) **Detect the bounding box.**
 The bounding box surrounding the barcode in the input image is detected. 
@@ -126,7 +126,7 @@ As explained before, the following quality parameters are computed on each scanl
 
 Finally, an overall symbolic grade and an overall numerical value are assigned to the whole barcode.
 
-## Output file
+## OUTPUT FILE
 According to the project description, an excel output file must be generated, containing the information and results of the applied process.
 
 In particular, the information is structured in the following sheets.
@@ -149,7 +149,7 @@ In particular, the information is structured in the following sheets.
 
 Actually, this is the basic output format. The user can specify to build a richer output file, containing more information. 
 
-## Interface
+## INTERFACE
 The most important functions are now briefly introduced. Each of them is contained in a separate Python file, since they can involve several auxiliar functions, with several lines of code.
 
 ### Barcode verification
@@ -174,7 +174,7 @@ Function `compute_quality_parameters`. It computes the quality parameters on the
 ### Output file building
 Function `build_output_file`. It build the output file.
 
-## Usage
+## USAGE
 Example of application of the `verify_barcode` function. It returns four dictionaries, containing the information and results of the four operations. Optionally, the user is asking to print the timing information and to make two specific plots.
 ```python
 # Verify the barcode print quality of the given input image
@@ -190,7 +190,7 @@ detection_dict, rotation_dict, refinement_dict, overall_quality_parameters_dict 
 
 The following is the obtained timing information.
 ```shell
-TIMING INFORMATION
+TIMING INFORMATION (milliseconds)
 	Detect bounding box: 0.012889862060546875
 	Rotate bounding box: 0.01150059700012207
 	Refine ROI image: 0.04480409622192383
@@ -203,7 +203,7 @@ The following are the plots.
   <img width="550vw" src="./images/scanlines_scanReflectanceProfiles_22.png">
 </p> 
 
-## Repository structure
+## REPOSITORY STRUCTURE
 
     .
     ├── dataset    # Input images and excel file containing the true quality parameters  
@@ -222,13 +222,13 @@ The following are the plots.
     ├── Linear Barcodes Verification Project.pdf
     └── README.md
 
-## Dependencies
+## DEPENDENCIES
 - [NumPy](https://numpy.org/)
 - [SciPy](https://scipy.org/)
 - [OpenCV](https://pypi.org/project/opencv-python/)
 - [Matplotlib](https://matplotlib.org/)
 
-## License
+## LICENSE
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 

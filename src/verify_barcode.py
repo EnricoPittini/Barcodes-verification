@@ -313,7 +313,7 @@ def verify_barcode(image_path, use_same_threshold=False, compute_barcode_structu
     end_computeQualityParameters_time = time.time()
 
     if verbose_timing:
-        print('TIMING INFORMATION')
+        print('TIMING INFORMATION (milliseconds)')
         print('\tDetect bounding box:', end_detectBB_time-start_time)
         print('\tRotate bounding box:', end_rotateBB_time-end_detectBB_time)
         print('\tRefine ROI image:', end_refineROI_time-end_rotateBB_time)
