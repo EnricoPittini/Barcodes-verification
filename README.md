@@ -213,7 +213,9 @@ The following are the plots.
 
     .
     ├── dataset     # Input images and excel file containing the true quality parameters  
-    ├── images   # Images shown in this README or in the notebooks                           
+    ├── images   # Images shown in this README or in the notebooks     
+    ├── notebooks   # Folder containing a small tutorial notebook
+    ├── out   # Folder containing the excel output file for all the dataset images                      
     ├── src  
     │   ├── build_output_file.py
     │   ├── compute_quality_parameters.py
@@ -222,15 +224,13 @@ The following are the plots.
     │   └── rotate_boundingBox.py
     │   └── utils.py
     │   └── verify_barcode.py
+    ├── tests  # Folder containing the tests on all datasets images
     ├── .gitignore
     ├── guide-barcode-verification.pdf
     ├── LICENSE
     ├── Linear-Barcodes-Verification-Project.pdf
-    ├── notebooks   # Folder containing a small tutorial notebook
-    ├── out   # Folder containing the excel output file for all the dataset images
     ├── report.pdf
-    ├── README.md 
-    └── tests   # Folder containing the tests on all datasets images
+    └──  README.md  
 
 ## DEPENDENCIES
 - [NumPy](https://numpy.org/)
