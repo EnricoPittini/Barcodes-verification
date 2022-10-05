@@ -2,18 +2,18 @@
 Verification of linear barcodes print quality according to ISO/IEC15416 specifications, using Image Processing and Computer Vision techniques.
 
 For more theoretical information, check out the following documents.
-- `Linear Barcodes Verification Project.pdf`: description of the project assignment.
-- `guide-barcode-verification.pdf`: description of linear barcodes print quality verification.
+- `Linear-Barcodes-Verification-Project.pdf`: description of the project assignment.
+- `guide-barcode-verification.pdf`: in-depth description of linear barcodes print quality verification.
 - `report.pdf`: description of the solution.
 
-For an in-depth view of the functions interfaces, check out the documentation and the doc-strings.
+For an in-depth view of the functions interfaces, check out the documentation and the doc-strings inside the Python files.
 
 ## DESCRIPTION
 Given an image containing a barcode, the task consists in verifying the print quality of the barcode, by computing some quality parameters. 
 
-Since the the barcode in the input image can be rotated and can have different scales and since the input image can contain other objects apart from the barcode, the quality parameters must be computed on a standardized image. We refer to this image as "refined ROI image", since it perfectly fits the Region Of Interest (i.e. the barcode) and it is refined according to some standards. More specifically, the refined ROI image is the sub-image of the input image which has the following properties.
+Since the barcode in the input image can be rotated and can have different scales and since the input image can contain other objects apart from the barcode, the quality parameters must be computed on a standardized sub-image. We refer to this image as "refined ROI image", since it perfectly fits the Region Of Interest (i.e. the barcode) and it is refined according to some standards. More specifically, the refined ROI image is the sub-image of the input image which has the following properties.
 - It contains the barcode, and the bars are perfectly vertical.
-- Along the width, there are exactly $10*X$ pixels before the first barcode bar and after the last barcode bar, where $X$ is the minimum width of a bar.
+- Along the width, there are exactly $10*X$ pixels before the first barcode bar and after the last barcode bar, where $X$ is the minimum width of a bar (in pixels).
 - Along the height, it perfectly fits the bar with smallest height. Basically, the height of the refined ROI image is equal to the minimum height of a barcode bar. 
 
 <p align="center">
@@ -24,17 +24,17 @@ Since the the barcode in the input image can be rotated and can have different s
 
 *These images refer to the image 'UPC#01'.*
 
-Then, the print quality parameters are computed. For computing the quality parameters, $10$ equally spaced horizontal lines are considered in the refined ROI image.
+Then, the print quality parameters are computed. For computing the quality parameters, $N$ equally spaced horizontal scanlines are considered in the refined ROI image: by default, $N=10$.
 <p align="center">
   <img width="300vw" src="./images/refined_roi_image_scanlines_22.png">
 </p>
 
 The quality parameters are computed one each scanline, by considering the *scan reflectance profile*, and they are the following.
-- Minimum reflectance, i.e. $R_{\text{min}}$.
-- Symbol Contrast, i.e. $SC$. For computing it, also the maximum reflectance, i.e. $R_{\text{max}}$, is taken into account.
+- Minimum Reflectance, i.e. $R_{\text{min}}$.
+- Symbol Contrast, i.e. $SC$. For computing it, also the Maximum Reflectance, i.e. $R_{\text{max}}$, is taken into account.
 - Minimum Edge Contrast, i.e. $EC_{\text{min}}$.
 - Modulation, i.e. $M$.
-- Defect, i.e. $D$. For computing it, also the maximum Element Reflectance Non-uniformity, i.e. $ERN_{\text{max}}$, is taken into account.
+- Defect, i.e. $D$. For computing it, also the Maximum Element Reflectance Non-uniformity, i.e. $ERN_{\text{max}}$, is taken into account.
 <p align="center">
   <img width="550vw" src="./images/scanlines_scanReflectanceProfiles_22.png">
 </p>
@@ -62,7 +62,7 @@ There are images in which the contrast, i.e. $SC$, is particularly bad on purpos
   <img width="300vw" src="./dataset/EAN-UPC-CONTRAST IMGB.BMP">
   <img width="300vw" src="./images/UPC07.BMP">
 </p>
-More specifically, five images are particularly interesting for $SC$, since its grade ranges from 'A' to 'F': images 'UPC#03', 'UPC#04', 'UPC#05', 'UPC#06', 'UPC#07'.
+Five images are particularly interesting for $SC$, since its grade ranges from 'A' to 'F': images 'UPC#03', 'UPC#04', 'UPC#05', 'UPC#06', 'UPC#07'.
 
 ### Bad modulation images
 There are images in which the modulation, i.e. $M$, is particularly bad on purpose. For obtaining a bad $M$, an artifact has been added to the barcode, whose purpose is to decrease the intensity change between a bar and a space.
@@ -70,7 +70,7 @@ There are images in which the modulation, i.e. $M$, is particularly bad on purpo
   <img width="500vw" src="./images/UPC11.BMP">
 </p>
 
-More specifically, five images are particularly interesting for $M$, since its grade ranges from 'A' to 'F': images 'UPC#08', 'UPC#09', 'UPC#10', 'UPC#11', 'UPC#12'. 
+Five images are particularly interesting for $M$, since its grade ranges from 'A' to 'F': images 'UPC#08', 'UPC#09', 'UPC#10', 'UPC#11', 'UPC#12'. 
 
 ### Bad defect images
 Finally, there are images in which the defect, i.e. $D$, is particularly bad on purpose. For obtaining a bad $D$, a "fake vertical bar" has been added to the barcode, either inside a space or a bar, for increasing the range of different intensities inside that barcode element. This "fake vertical bar" is called *defect*, and it can be either inside a space, i.e. *defect spot*, or inside a bar, i.e. *defect void*. The first image shows an example of defect spot, the second shows an example of defect void.
@@ -79,9 +79,9 @@ Finally, there are images in which the defect, i.e. $D$, is particularly bad on 
   <img width="500vw" src="./images/UPC22.BMP">
 </p>
 
-More specifically, five images are particularly interesting for $D$, since its grade ranges from 'A' to 'F', due to a defect spot: images 'UPC#13', 'UPC#14', 'UPC#15', 'UPC#16', 'UPC#17'.
+Five images are particularly interesting for $D$, since its grade ranges from 'A' to 'F', due to a defect spot: images 'UPC#13', 'UPC#14', 'UPC#15', 'UPC#16', 'UPC#17'.
 
-Furthermore, other five images have $D$ which ranges from 'A' to 'F', but due to a defect void: images 'UPC#18', 'UPC#19', 'UPC#20', 'UPC#21', 'UPC#22'.
+Five images have $D$ which ranges from 'A' to 'F', but due to a defect void: images 'UPC#18', 'UPC#19', 'UPC#20', 'UPC#21', 'UPC#22'.
 
 ## APPROACH
 For solving our problem, a process consisting in four subsequent operations is implemented. For more information, see the report of this project. *The following shown examples are about the image 'UPC#01'.*
@@ -109,7 +109,7 @@ In order to perform this refinement, the precise and complete structure of the b
 </p> 
 
 4) **Compute the quality parameters**
-Finally, the quality parameters of the barcode are computed, on the refined ROI image.
+The quality parameters of the barcode are computed, on the refined ROI image.
 As explained before, the following quality parameters are computed on each scanline:
     - $R_{\text{min}}$, with also its symbolic grade
     - $SC$, with also its symbolic grade
@@ -219,7 +219,8 @@ The following are the plots.
     ├── .gitignore
     ├── guide-barcode-verification.pdf
     ├── LICENSE
-    ├── Linear Barcodes Verification Project.pdf
+    ├── Linear-Barcodes-Verification-Project.pdf
+    ├── report.pdf
     └── README.md
 
 ## DEPENDENCIES
@@ -227,6 +228,7 @@ The following are the plots.
 - [SciPy](https://scipy.org/)
 - [OpenCV](https://pypi.org/project/opencv-python/)
 - [Matplotlib](https://matplotlib.org/)
+- [Pandas](https://pandas.pydata.org/)
 
 ## LICENSE
 

@@ -2,8 +2,6 @@ import numpy as np
 import cv2
 from matplotlib import pyplot as plt
 import math
-import time
-
 
 def refine_ROIimage(roi_image, image_rot, bb_points_sorted_rot, compute_barcode_structure_algorithm=1, threshold=None,
                        fix_wrongBar_case=True, outlier_detection_level=0.02, visualize_barcode_structure=False, 
