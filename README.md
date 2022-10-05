@@ -6,7 +6,13 @@ For more theoretical information, check out the following documents.
 - `guide-barcode-verification.pdf`: in-depth description of linear barcodes print quality verification.
 - `report.pdf`: description of the solution.
 
-For an in-depth view of the functions interfaces, check out the documentation and the doc-strings inside the Python files.
+For an in-depth view of the functions interfaces, check out the documentation and the doc-strings inside the Python files, inside the `src` folder.
+
+For a small tutorial, see the notebook `usage` inside the `notebooks` folder.
+
+The folder `tests` contains the tests executed on all dataset images.
+
+The folder `out` contains the excel output files for all dataset images.
 
 ## DESCRIPTION
 Given an image containing a barcode, the task consists in verifying the print quality of the barcode, by computing some quality parameters. 
@@ -206,8 +212,8 @@ The following are the plots.
 ## REPOSITORY STRUCTURE
 
     .
-    ├── dataset    # Input images and excel file containing the true quality parameters  
-    ├── images  # Images shown in this README or in the notebooks                           
+    ├── dataset     # Input images and excel file containing the true quality parameters  
+    ├── images   # Images shown in this README or in the notebooks                           
     ├── src  
     │   ├── build_output_file.py
     │   ├── compute_quality_parameters.py
@@ -220,8 +226,11 @@ The following are the plots.
     ├── guide-barcode-verification.pdf
     ├── LICENSE
     ├── Linear-Barcodes-Verification-Project.pdf
+    ├── notebooks   # Folder containing a small tutorial notebook
+    ├── out   # Folder containing the excel output file for all the dataset images
     ├── report.pdf
-    └── README.md
+    ├── README.md 
+    └── tests   # Folder containing the tests on all datasets images
 
 ## DEPENDENCIES
 - [NumPy](https://numpy.org/)
